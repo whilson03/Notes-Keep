@@ -31,11 +31,17 @@ public interface NoteDao {
     @Query("DELETE FROM notes_table")
     void deleteAllNotes();
 
-    @Query("SELECT * FROM notes_table")
+    @Query("SELECT * FROM notes_table ORDER BY id DESC")
     LiveData<List<Note>> getAllNotes();
 
-//    @Query("SELECT * FROM notes_table WHERE body like % string %")
-//    List<Note> searchNote(String string);
+    @Query("SELECT * FROM notes_table WHERE favourite == 1 ")
+    LiveData<List<Note>> getAllFavouriteNotes();
+
+    @Update
+    void addToFavourite(Note note);
+
+    @Update
+    void removeFavouriteNotes(Note note);
 
 
 }

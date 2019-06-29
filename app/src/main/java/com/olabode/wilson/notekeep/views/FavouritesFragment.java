@@ -3,6 +3,7 @@ package com.olabode.wilson.notekeep.views;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.olabode.wilson.notekeep.R;
 import com.olabode.wilson.notekeep.adapters.NoteAdapter;
 import com.olabode.wilson.notekeep.models.Note;
@@ -32,52 +32,42 @@ import static android.app.Activity.RESULT_OK;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NotesFragment extends Fragment {
+public class FavouritesFragment extends Fragment {
 
-    public static final int ADD_NOTE_REQUEST = 1;
-    public static final int EDIT_NOTE_REQUEST = 2;
-
+    public static final int EDIT_NOTE_REQUEST = 4;
+    private static final int ADD_NOTE_REQUEST = 5;
+    private static final String TAG = FavouritesFragment.class.getSimpleName();
+    private NoteAdapter mNoteAdapter;
     private NoteViewModel noteViewModel;
-    private NoteAdapter adapter;
 
 
-    public NotesFragment() {
+    public FavouritesFragment() {
         // Required empty public constructor
     }
 
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_notes, container, false);
-
-
-        FloatingActionButton buttonAddNote = rootView.findViewById(R.id.button_add_notes);
-        buttonAddNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), NoteActivity.class);
-                startActivityForResult(intent, ADD_NOTE_REQUEST);
-            }
-        });
-
+        View rootView = inflater.inflate(R.layout.fragment_favourites, container, false);
 
         RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
-        adapter = new NoteAdapter();
-        recyclerView.setAdapter(adapter);
+        mNoteAdapter = new NoteAdapter();
+        recyclerView.setAdapter(mNoteAdapter);
 
 
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
-        noteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
+        noteViewModel.getAllFavouriteNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(@Nullable List<Note> notes) {
-                adapter.submitList(notes);
+                mNoteAdapter.submitList(notes);
             }
         });
+
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT |
                 ItemTouchHelper.RIGHT) {
@@ -86,24 +76,22 @@ public class NotesFragment extends Fragment {
                 return false;
             }
 
-
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 
                 switch (direction) {
                     case ItemTouchHelper.LEFT:
-                        noteViewModel.delete(adapter.getNoteAt(viewHolder.getAdapterPosition()));
+                        noteViewModel.delete(mNoteAdapter.getNoteAt(viewHolder.getAdapterPosition()));
                         break;
                     case ItemTouchHelper.RIGHT:
-                        Note note = adapter.getNoteAt(viewHolder.getAdapterPosition());
+                        Note note = mNoteAdapter.getNoteAt(viewHolder.getAdapterPosition());
                         noteViewModel.delete(note);
                         break;
-
                 }
             }
         }).attachToRecyclerView(recyclerView);
 
-        adapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
+        mNoteAdapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Note note) {
                 Intent intent = new Intent(getActivity(), NoteActivity.class);
@@ -114,20 +102,18 @@ public class NotesFragment extends Fragment {
             }
         });
 
-        adapter.setTlistener(new NoteAdapter.ToggleListener() {
+
+        mNoteAdapter.setTlistener(new NoteAdapter.ToggleListener() {
             @Override
             public void onItemToggle(Note note, boolean isChecked) {
-                if (isChecked) {
-                    Toast.makeText(getContext(), "Added to Favourite", Toast.LENGTH_SHORT).show();
-                    note.setIsFavourite(1);
-                    noteViewModel.addToFavourite(note);
-                } else {
-                    Toast.makeText(getContext(), "Removed from Favourites", Toast.LENGTH_SHORT).show();
+                if (!isChecked) {
+                    Toast.makeText(getContext(), "Removed from Favourite", Toast.LENGTH_SHORT).show();
                     note.setIsFavourite(0);
                     noteViewModel.removeFromFavourite(note);
                 }
             }
         });
+
 
         return rootView;
     }
@@ -143,9 +129,11 @@ public class NotesFragment extends Fragment {
 
             Note note = new Note(title, description, timeStamp);
             noteViewModel.insert(note);
-
             Toast.makeText(getActivity(), "Saved", Toast.LENGTH_SHORT).show();
+
+
         } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
+
             int id = data.getIntExtra(NoteActivity.EXTRA_ID, -1);
             if (id == -1) {
                 Toast.makeText(getContext(), "Note Can't be Updated", Toast.LENGTH_SHORT).show();
@@ -158,31 +146,39 @@ public class NotesFragment extends Fragment {
 
             Note note = new Note(title, description, timeStamp);
             note.setId(id);
+            note.setIsFavourite(1);
             noteViewModel.update(note);
 
-        } else if (requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_CANCELED) {
-            Toast.makeText(getContext(), "Saved To Draft", Toast.LENGTH_SHORT).show();
+        } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_CANCELED) {
+            Log.i(TAG, "i was cancelled");
 
+            Toast.makeText(getContext(), "Saved To Draft", Toast.LENGTH_SHORT).show();
+            int id = data.getIntExtra(NoteActivity.EXTRA_ID, -1);
+            if (id == -1) {
+                Toast.makeText(getContext(), "Note Can't be Updated", Toast.LENGTH_SHORT).show();
+                return;
+            }
             String title = data.getStringExtra(NoteActivity.EXTRA_TITLE);
             String description = data.getStringExtra(NoteActivity.EXTRA_DESCRIPTION);
             String timeStamp = data.getStringExtra(NoteActivity.EXTRA_DATE);
 
             Note note = new Note(title, description, timeStamp);
-            noteViewModel.insert(note);
+            note.setId(id);
+            note.setIsFavourite(1);
+            noteViewModel.update(note);
 
 
         } else {
             Toast.makeText(getActivity(), "Note not saved", Toast.LENGTH_SHORT).show();
         }
-    }
 
+
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Objects.requireNonNull(getActivity()).setTitle("Notes");
+        Objects.requireNonNull(getActivity()).setTitle("Favourites");
     }
-
-
 
 }

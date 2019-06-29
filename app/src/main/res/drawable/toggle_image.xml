@@ -1,0 +1,7 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- When selected -->
+    <item android:drawable="@drawable/ic_remove_favourite" android:state_checked="false" />
+    <!-- When not selected-->
+    <item android:drawable="@drawable/ic_add_favourites" android:state_checked="true" />
+
+</selector>

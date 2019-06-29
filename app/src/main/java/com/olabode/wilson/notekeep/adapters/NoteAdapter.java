@@ -1,9 +1,12 @@
 package com.olabode.wilson.notekeep.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
@@ -18,6 +21,7 @@ import com.olabode.wilson.notekeep.models.Note;
  */
 public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
 
+
     private static DiffUtil.ItemCallback<Note> DIFF_CALLBACK = new DiffUtil.ItemCallback<Note>() {
         @Override
         public boolean areItemsTheSame(@NonNull Note oldItem, @NonNull Note newItem) {
@@ -28,10 +32,13 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         @Override
         public boolean areContentsTheSame(@NonNull Note oldItem, @NonNull Note newItem) {
             return oldItem.getTitle().equals(newItem.getTitle()) &&
-                    oldItem.getBody().equals(newItem.getBody());
+                    oldItem.getBody().equals(newItem.getBody()) &&
+                    oldItem.getTimeStamp().equals(newItem.getTimeStamp());
         }
     };
+
     private OnItemClickListener listener;
+    private ToggleListener Tlistener;
 
     public NoteAdapter() {
         super(DIFF_CALLBACK);
@@ -51,6 +58,13 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         Note currentNote = getItem(position);
         holder.textViewTitle.setText(currentNote.getTitle());
         holder.textViewDescription.setText(currentNote.getBody());
+        holder.dateTextView.setText(currentNote.getTimeStamp());
+        if (currentNote.getIsFavourite() == 1) {
+            holder.favouriteButton.setChecked(true);
+        } else {
+            holder.favouriteButton.setChecked(false);
+        }
+
 
     }
 
@@ -64,20 +78,42 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
 
     }
 
-    public interface OnItemClickListener {
+    public void setTlistener(ToggleListener tlistener) {
+        Tlistener = tlistener;
+    }
 
+    /**
+     * interfaces
+     */
+    public interface OnItemClickListener {
         void onItemClick(Note note);
     }
 
+
+    public interface ToggleListener {
+        void onItemToggle(Note note, boolean isChecked);
+    }
+
+    public interface UnToggleListener {
+
+    }
+
+
     class NoteHolder extends RecyclerView.ViewHolder {
+
         private TextView textViewTitle;
         private TextView textViewDescription;
+        private TextView dateTextView;
+        private ToggleButton favouriteButton;
 
 
         public NoteHolder(View itemView) {
             super(itemView);
             textViewTitle = itemView.findViewById(R.id.text_view_title);
             textViewDescription = itemView.findViewById(R.id.text_view_description);
+            dateTextView = itemView.findViewById(R.id.note_date);
+            favouriteButton = itemView.findViewById(R.id.favButton);
+
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -85,12 +121,31 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
                     int position = getAdapterPosition();
                     if (listener != null && position != RecyclerView.NO_POSITION) {
                         listener.onItemClick(getItem(position));
-
                     }
-
-
                 }
             });
+
+
+            favouriteButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        int position = getAdapterPosition();
+                        Log.i("toggle", " " + position);
+                        if (Tlistener != null && position != RecyclerView.NO_POSITION) {
+                            Tlistener.onItemToggle(getItem(position), true);
+                        }
+
+                    } else {
+                        int position = getAdapterPosition();
+                        Log.i("toggle", " " + position);
+                        if (Tlistener != null && position != RecyclerView.NO_POSITION) {
+                            Tlistener.onItemToggle(getItem(position), false);
+                        }
+                    }
+                }
+            });
+
+
         }
 
     }

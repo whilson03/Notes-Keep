@@ -17,11 +17,13 @@ import java.util.List;
 public class NoteViewModel extends AndroidViewModel {
     private NoteRepository repository;
     private LiveData<List<Note>> allNotes;
+    private LiveData<List<Note>> allFavourites;
 
     public NoteViewModel(@NonNull Application application) {
         super(application);
         repository = new NoteRepository(application);
         allNotes = repository.getAllNotes();
+        allFavourites = repository.getAllFavouriteNotes();
     }
 
     public void insert(Note note) {
@@ -36,11 +38,24 @@ public class NoteViewModel extends AndroidViewModel {
         repository.delete(note);
     }
 
+    public void addToFavourite(Note note) {
+        repository.addNoteToFavourite(note);
+    }
+
+    public void removeFromFavourite(Note note) {
+        repository.removeNoteFromFavourite(note);
+
+    }
+
     public void deleteAllNotes() {
         repository.deleteAllNotes();
     }
 
     public LiveData<List<Note>> getAllNotes() {
         return allNotes;
+    }
+
+    public LiveData<List<Note>> getAllFavouriteNotes() {
+        return allFavourites;
     }
 }

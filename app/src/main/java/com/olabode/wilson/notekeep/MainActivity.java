@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
-import com.olabode.wilson.notekeep.views.Favourites;
+import com.olabode.wilson.notekeep.views.FavouritesFragment;
 import com.olabode.wilson.notekeep.views.NotesFragment;
 import com.olabode.wilson.notekeep.views.TrashFragment;
 
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.nav_favourites:
-                fragment = new Favourites();
+                fragment = new FavouritesFragment();
                 break;
 
             case R.id.nav_trash:

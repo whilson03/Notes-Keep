@@ -1,37 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginEnd="8dp">
+    android:layout_height="85dp"
+    android:layout_marginTop="1dp"
+    app:cardBackgroundColor="@color/lightYellow">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:padding="8dp">
+
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="8dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:background="@color/mediumYellow" />
 
         <TextView
             android:id="@+id/text_view_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/view"
             android:ellipsize="end"
+            android:maxLength="25"
             android:maxLines="1"
+            android:padding="2dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textSize="30sp"
+            android:textSize="20sp"
+            android:textStyle="italic"
             tools:text="@string/title" />
 
         <TextView
+            android:layout_marginStart="12dp"
             android:id="@+id/text_view_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/text_view_title"
-            android:maxLines="1"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="2dp"
+            android:maxLines="2"
             android:textSize="16sp"
             android:textStyle="italic"
             tools:text="@string/description" />
+
+        <TextView
+            android:id="@+id/note_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="6dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/_10_dec_2019"
+            android:textSize="13sp"
+            android:textStyle="normal" />
+
+        <ToggleButton
+            android:id="@+id/favButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/toggle_image"
+            android:padding="18dp"
+            android:textOff=""
+            android:textOn="" />
 
     </RelativeLayout>
 

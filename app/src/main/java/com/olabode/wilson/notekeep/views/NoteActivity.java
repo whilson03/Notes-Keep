@@ -3,6 +3,7 @@ package com.olabode.wilson.notekeep.views;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,12 +13,17 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.olabode.wilson.notekeep.R;
+import com.olabode.wilson.notekeep.utils.HelperMethods;
+
+import java.util.Objects;
 
 public class NoteActivity extends AppCompatActivity {
 
     public static final String EXTRA_ID = "id";
     public static final String EXTRA_TITLE = "title";
     public static final String EXTRA_DESCRIPTION = "description";
+    public static final String EXTRA_DATE = "time_stamp";
+    private static final String TAG = NoteActivity.class.getSimpleName();
 
     private EditText editTextTitle;
     private EditText editTextDescription;
@@ -32,12 +38,13 @@ public class NoteActivity extends AppCompatActivity {
         editTextDescription = findViewById(R.id.edit_text_description);
 
 
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_trash);
+        // add the close icon from the activity.
+        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_close);
 
         Intent intent = getIntent();
 
         if (intent.hasExtra(EXTRA_ID)) {
-            setTitle("Edit Note");
+            setTitle(R.string.title_edit);
             editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE));
             editTextDescription.setText(intent.getStringExtra(EXTRA_DESCRIPTION));
         } else {
@@ -49,7 +56,7 @@ public class NoteActivity extends AppCompatActivity {
     private void saveNote() {
         String title = editTextTitle.getText().toString();
         String description = editTextDescription.getText().toString();
-
+        String timeStamp = HelperMethods.getDate();
 
         if (title.trim().isEmpty() || description.trim().isEmpty()) {
             Toast.makeText(this, "Please insert a title and description", Toast.LENGTH_SHORT).show();
@@ -59,6 +66,7 @@ public class NoteActivity extends AppCompatActivity {
         Intent data = new Intent();
         data.putExtra(EXTRA_TITLE, title);
         data.putExtra(EXTRA_DESCRIPTION, description);
+        data.putExtra(EXTRA_DATE, timeStamp);
 
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
         if (id != -1) {
@@ -84,6 +92,50 @@ public class NoteActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        saveDraft();
+        super.onBackPressed();
+    }
+
+
+    private void saveDraft() {
+        Log.i(TAG, "entering into save draft method");
+
+        String title = editTextTitle.getText().toString();
+        String description = editTextDescription.getText().toString();
+        String timeStamp = HelperMethods.getDate();
+
+
+        if (description.trim().isEmpty()) {
+            Toast.makeText(this, "Please insert a title and description", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!description.isEmpty() && title.isEmpty()) {
+            Log.i(TAG, "save draft empty title");
+
+            Intent data = new Intent();
+            data.putExtra(EXTRA_TITLE, "no title");
+            data.putExtra(EXTRA_DESCRIPTION, description);
+            data.putExtra(EXTRA_DATE, timeStamp);
+
+            setResult(RESULT_CANCELED, data);
+            finish();
+
+        } else {
+            Intent data = new Intent();
+            data.putExtra(EXTRA_TITLE, title);
+            data.putExtra(EXTRA_DESCRIPTION, description);
+            data.putExtra(EXTRA_DATE, timeStamp);
+
+            setResult(RESULT_CANCELED, data);
+            finish();
+
         }
     }
 }

@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.olabode.wilson.notekeep.utils.Constants;
+
 /**
  * Created by OLABODE WILSON on 2019-06-26.
  */
@@ -13,15 +15,23 @@ public class Note {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    @ColumnInfo(name = "title")
+    @ColumnInfo(name = Constants.DatabaseColumns.COLUMN_TITLE)
     private String title;
 
-    @ColumnInfo(name = "body")
+    @ColumnInfo(name = Constants.DatabaseColumns.COLUMN_BODY)
     private String body;
 
-    public Note(String title, String body) {
+    @ColumnInfo(name = "favourite")
+    private int isFavourite = 0;
+
+
+    @ColumnInfo(name = Constants.DatabaseColumns.COLUMN_TIMESTAMP)
+    private String timeStamp;
+
+    public Note(String title, String body, String timeStamp) {
         this.title = title;
         this.body = body;
+        this.timeStamp = timeStamp;
     }
 
     public int getId() {
@@ -47,4 +57,22 @@ public class Note {
     public void setBody(String body) {
         this.body = body;
     }
+
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public int getIsFavourite() {
+        return isFavourite;
+    }
+
+    public void setIsFavourite(int isFavourite) {
+        this.isFavourite = isFavourite;
+    }
 }
+
+
