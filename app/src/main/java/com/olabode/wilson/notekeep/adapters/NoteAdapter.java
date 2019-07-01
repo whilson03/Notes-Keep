@@ -22,6 +22,7 @@ import com.olabode.wilson.notekeep.models.Note;
 public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
 
 
+
     private static DiffUtil.ItemCallback<Note> DIFF_CALLBACK = new DiffUtil.ItemCallback<Note>() {
         @Override
         public boolean areItemsTheSame(@NonNull Note oldItem, @NonNull Note newItem) {
@@ -37,12 +38,12 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         }
     };
 
+
     private OnItemClickListener listener;
     private ToggleListener Tlistener;
 
     public NoteAdapter() {
         super(DIFF_CALLBACK);
-
     }
 
     @NonNull
@@ -56,21 +57,26 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
     @Override
     public void onBindViewHolder(@NonNull NoteHolder holder, int position) {
         Note currentNote = getItem(position);
+
         holder.textViewTitle.setText(currentNote.getTitle());
         holder.textViewDescription.setText(currentNote.getBody());
         holder.dateTextView.setText(currentNote.getTimeStamp());
+
         if (currentNote.getIsFavourite() == 1) {
             holder.favouriteButton.setChecked(true);
         } else {
             holder.favouriteButton.setChecked(false);
         }
-
-
     }
 
 
     public Note getNoteAt(int position) {
+
         return getItem(position);
+    }
+
+    public void addNoteBack(int pos, Note note) {
+
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -94,9 +100,6 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         void onItemToggle(Note note, boolean isChecked);
     }
 
-    public interface UnToggleListener {
-
-    }
 
 
     class NoteHolder extends RecyclerView.ViewHolder {
@@ -133,6 +136,7 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
                         Log.i("toggle", " " + position);
                         if (Tlistener != null && position != RecyclerView.NO_POSITION) {
                             Tlistener.onItemToggle(getItem(position), true);
+
                         }
 
                     } else {

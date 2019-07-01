@@ -2,6 +2,10 @@ package com.olabode.wilson.notekeep.views;
 
 
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -40,6 +45,9 @@ public class NotesFragment extends Fragment {
     private NoteViewModel noteViewModel;
     private NoteAdapter adapter;
 
+    private Drawable icon;
+    private ColorDrawable background;
+
 
     public NotesFragment() {
         // Required empty public constructor
@@ -51,6 +59,11 @@ public class NotesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_notes, container, false);
+
+
+        icon = ContextCompat.getDrawable(getActivity(),
+                R.drawable.ic_trash);
+        background = new ColorDrawable(Color.RED);
 
 
         FloatingActionButton buttonAddNote = rootView.findViewById(R.id.button_add_notes);
@@ -79,6 +92,10 @@ public class NotesFragment extends Fragment {
             }
         });
 
+
+        /**
+         * handles swipe to delete recycler view
+         */
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT |
                 ItemTouchHelper.RIGHT) {
             @Override
@@ -86,6 +103,41 @@ public class NotesFragment extends Fragment {
                 return false;
             }
 
+
+            @Override
+            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder
+                    viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+
+
+                View itemView = viewHolder.itemView;
+                int backgroundCornerOffset = 20; //so background is behind the rounded corners of itemView
+
+                int iconMargin = (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
+                int iconTop = itemView.getTop() + (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
+                int iconBottom = iconTop + icon.getIntrinsicHeight();
+
+                if (dX > 0) { // Swiping to the right
+                    int iconLeft = itemView.getLeft() + iconMargin;
+                    int iconRight = iconLeft + icon.getIntrinsicWidth();
+                    icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+
+                    background.setBounds(itemView.getLeft(), itemView.getTop(),
+                            itemView.getLeft() + ((int) dX) + backgroundCornerOffset, itemView.getBottom());
+                } else if (dX < 0) { // Swiping to the left
+                    int iconLeft = itemView.getRight() - iconMargin - icon.getIntrinsicWidth();
+                    int iconRight = itemView.getRight() - iconMargin;
+                    icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+
+                    background.setBounds(itemView.getRight() + ((int) dX) - backgroundCornerOffset,
+                            itemView.getTop(), itemView.getRight(), itemView.getBottom());
+                } else { // view is unSwiped
+                    background.setBounds(0, 0, 0, 0);
+                }
+
+                background.draw(c);
+                icon.draw(c);
+            }
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
@@ -118,11 +170,11 @@ public class NotesFragment extends Fragment {
             @Override
             public void onItemToggle(Note note, boolean isChecked) {
                 if (isChecked) {
-                    Toast.makeText(getContext(), "Added to Favourite", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getContext(), "Added to Favourite", Toast.LENGTH_SHORT).show();
                     note.setIsFavourite(1);
                     noteViewModel.addToFavourite(note);
                 } else {
-                    Toast.makeText(getContext(), "Removed from Favourites", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getContext(), "Removed from Favourites", Toast.LENGTH_SHORT).show();
                     note.setIsFavourite(0);
                     noteViewModel.removeFromFavourite(note);
                 }
@@ -182,7 +234,6 @@ public class NotesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Objects.requireNonNull(getActivity()).setTitle("Notes");
     }
-
 
 
 }

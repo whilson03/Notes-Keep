@@ -24,10 +24,24 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="description">Description</string>
     <string name="save">Save</string>
-    <string name="app_moto">Every idea is worth keeping...</string>
+    <string name="app_moto">Every idea is worth keeping…</string>
     <string name="title">Title</string>
     <string name="_10_dec_2019">10/dec/2019</string>
     <string name="title_edit">Edit Note</string>
+    <string name="snack_bar_text">Undo Delete</string>
 
+
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
+
+    <string name="slide_1_title">Hello NotesKeep!</string>
+    <string name="slide_1_desc">Every idea is worth keeping!</string>
+
+    <string name="slide_2_title">Favourites</string>
+    <string name="slide_2_desc">Order your favourite notes!</string>
+
+    <string name="slide_3_title">Trash</string>
+    <string name="slide_3_desc">Deleted notes are moved to trash!</string>
 
 </resources>
