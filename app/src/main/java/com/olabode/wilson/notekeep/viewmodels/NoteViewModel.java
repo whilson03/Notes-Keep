@@ -15,6 +15,7 @@ import java.util.List;
  * Created by OLABODE WILSON on 2019-06-26.
  */
 public class NoteViewModel extends AndroidViewModel {
+
     private NoteRepository repository;
     private LiveData<List<Note>> allNotes;
     private LiveData<List<Note>> allFavourites;

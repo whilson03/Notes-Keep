@@ -43,5 +43,6 @@
 
     <string name="slide_3_title">Trash</string>
     <string name="slide_3_desc">Deleted notes are moved to trash!</string>
+    <string name="copy">Copy</string>
 
 </resources>

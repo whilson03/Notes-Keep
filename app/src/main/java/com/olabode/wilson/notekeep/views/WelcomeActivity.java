@@ -1,4 +1,4 @@
-package com.olabode.wilson.notekeep;
+package com.olabode.wilson.notekeep.views;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +19,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+
+import com.olabode.wilson.notekeep.MainActivity;
+import com.olabode.wilson.notekeep.PrefManager;
+import com.olabode.wilson.notekeep.R;
 
 
 public class WelcomeActivity extends AppCompatActivity {

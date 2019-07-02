@@ -41,6 +41,9 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
 
     private OnItemClickListener listener;
     private ToggleListener Tlistener;
+    private OnItemLongClickListener LongListener;
+
+
 
     public NoteAdapter() {
         super(DIFF_CALLBACK);
@@ -79,14 +82,7 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
 
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
 
-    }
-
-    public void setTlistener(ToggleListener tlistener) {
-        Tlistener = tlistener;
-    }
 
     /**
      * interfaces
@@ -95,12 +91,25 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         void onItemClick(Note note);
     }
 
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public interface ToggleListener {
         void onItemToggle(Note note, boolean isChecked);
     }
 
+    public void setTlistener(ToggleListener tlistener) {
+        this.Tlistener = tlistener;
+    }
 
+    public void setLongListener(OnItemLongClickListener listener) {
+        this.LongListener = listener;
+    }
+
+    public interface OnItemLongClickListener {
+        void OnItemLongClick(Note note);
+    }
 
     class NoteHolder extends RecyclerView.ViewHolder {
 
@@ -133,7 +142,9 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
                         int position = getAdapterPosition();
+
                         Log.i("toggle", " " + position);
+
                         if (Tlistener != null && position != RecyclerView.NO_POSITION) {
                             Tlistener.onItemToggle(getItem(position), true);
 
@@ -141,11 +152,26 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
 
                     } else {
                         int position = getAdapterPosition();
+
                         Log.i("toggle", " " + position);
+
                         if (Tlistener != null && position != RecyclerView.NO_POSITION) {
                             Tlistener.onItemToggle(getItem(position), false);
                         }
                     }
+                }
+            });
+
+
+            // get the position that was long clicked
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    int position = getAdapterPosition();
+                    if (LongListener != null && position != RecyclerView.NO_POSITION) {
+                        LongListener.OnItemLongClick(getItem(position));
+                    }
+                    return false;
                 }
             });
 

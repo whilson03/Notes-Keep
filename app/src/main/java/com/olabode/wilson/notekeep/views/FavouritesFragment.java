@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.olabode.wilson.notekeep.BottomSheetFragment;
 import com.olabode.wilson.notekeep.R;
 import com.olabode.wilson.notekeep.adapters.NoteAdapter;
 import com.olabode.wilson.notekeep.models.Note;
@@ -61,7 +62,7 @@ public class FavouritesFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_favourites, container, false);
 
-
+        //handle icon and background for swipe to delete layout
         icon = ContextCompat.getDrawable(getActivity(),
                 R.drawable.ic_trash);
         background = new ColorDrawable(Color.RED);
@@ -158,6 +159,7 @@ public class FavouritesFragment extends Fragment {
         });
 
 
+        // Toggle for favourite
         mNoteAdapter.setTlistener(new NoteAdapter.ToggleListener() {
             @Override
             public void onItemToggle(Note note, boolean isChecked) {
@@ -166,6 +168,16 @@ public class FavouritesFragment extends Fragment {
                     note.setIsFavourite(0);
                     noteViewModel.removeFromFavourite(note);
                 }
+            }
+        });
+
+
+        // long click event
+        mNoteAdapter.setLongListener(new NoteAdapter.OnItemLongClickListener() {
+            @Override
+            public void OnItemLongClick(Note note) {
+                showBottomSheetDialogFragment(note);
+
             }
         });
 
@@ -234,6 +246,36 @@ public class FavouritesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Objects.requireNonNull(getActivity()).setTitle("Favourites");
+    }
+
+
+    /**
+     * inflate and communicate with the bottom sheet fragment via an interface
+     */
+
+    public void showBottomSheetDialogFragment(final Note note) {
+        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
+        bottomSheetFragment.show(getFragmentManager(), bottomSheetFragment.getTag());
+
+        bottomSheetFragment.setmListener(new BottomSheetFragment.BottomSheetListener() {
+            @Override
+            public void onButtonClicked(int id) {
+                switch (id) {
+                    case R.id.bottom_sheet_delete:
+                        noteViewModel.delete(note);
+                        Toast.makeText(getContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case R.id.bottom_sheet_copy:
+                        Toast.makeText(getContext(), "Copied", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case R.id.bottom_sheet_share:
+
+                        break;
+                }
+            }
+        });
     }
 
 }
