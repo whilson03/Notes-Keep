@@ -3,14 +3,11 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_subtitle">Every idea is worth keeping…</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-    <string name="menu_tools">Tools</string>
+
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
     <string name="communicate">Communicate</string>
@@ -20,11 +17,10 @@
     <string name="settings">Settings</string>
     <string name="feedback">FeedBack</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="description">Description</string>
     <string name="save">Save</string>
-    <string name="app_moto">Every idea is worth keeping…</string>
+
     <string name="title">Title</string>
     <string name="_10_dec_2019">10/dec/2019</string>
     <string name="title_edit">Edit Note</string>
@@ -44,5 +40,28 @@
     <string name="slide_3_title">Trash</string>
     <string name="slide_3_desc">Deleted notes are moved to trash!</string>
     <string name="copy">Copy</string>
+    <string name="share_using">share with</string>
+
+
+    <string name="text_tiny">tiny</string>
+    <string name="text_small">Small</string>
+    <string name="text_medium">Medium</string>
+    <string name="text_large">Large</string>
+
+
+    <string-array name="text_mode_preference_entries">
+        <item>@string/text_tiny</item>
+        <item>@string/text_small</item>
+        <item>@string/text_medium</item>
+        <item>@string/text_large</item>
+    </string-array>
+
+
+    <string-array name="text_mode_preference_values">
+        <item>14</item>
+        <item>20</item>
+        <item>24</item>
+        <item>28</item>
+    </string-array>
 
 </resources>

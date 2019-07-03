@@ -1,6 +1,9 @@
 package com.olabode.wilson.notekeep.views;
 
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -267,15 +270,37 @@ public class FavouritesFragment extends Fragment {
                         break;
 
                     case R.id.bottom_sheet_copy:
+                        copyToClipBoard(note);
                         Toast.makeText(getContext(), "Copied", Toast.LENGTH_SHORT).show();
                         break;
 
                     case R.id.bottom_sheet_share:
-
+                        shareNote(note);
                         break;
                 }
             }
         });
+    }
+
+
+    private void copyToClipBoard(Note note) {
+        String body = note.getTitle() + "\n" + note.getBody();
+        ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(getActivity()).getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText(note.getTitle(), body);
+        Log.i(TAG, note.getBody());
+        assert clipboard != null;
+        clipboard.setPrimaryClip(clip);
+    }
+
+
+    private void shareNote(Note note) {
+        String shareBody = note.getTitle() + "\n" + note.getBody();
+        String subject = note.getTitle();
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+        startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
     }
 
 }

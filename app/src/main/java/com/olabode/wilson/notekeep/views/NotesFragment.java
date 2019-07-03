@@ -1,12 +1,16 @@
 package com.olabode.wilson.notekeep.views;
 
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +36,6 @@ import com.olabode.wilson.notekeep.viewmodels.NoteViewModel;
 import java.util.List;
 import java.util.Objects;
 
-import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
 /**
@@ -42,13 +45,15 @@ public class NotesFragment extends Fragment {
 
     public static final int ADD_NOTE_REQUEST = 1;
     public static final int EDIT_NOTE_REQUEST = 2;
+    private static final String TAG = NotesFragment.class.getSimpleName();
 
     private NoteViewModel noteViewModel;
     private NoteAdapter adapter;
 
     private Drawable icon;
     private ColorDrawable background;
-
+    private RecyclerView recyclerView;
+    private LinearLayoutManager layoutManager;
 
 
     public NotesFragment() {
@@ -79,12 +84,14 @@ public class NotesFragment extends Fragment {
         });
 
 
-        RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView = rootView.findViewById(R.id.recycler_view);
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
         adapter = new NoteAdapter();
         recyclerView.setAdapter(adapter);
+
 
 
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
@@ -202,6 +209,7 @@ public class NotesFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_OK) {
+
             String title = data.getStringExtra(NoteActivity.EXTRA_TITLE);
             String description = data.getStringExtra(NoteActivity.EXTRA_DESCRIPTION);
             String timeStamp = data.getStringExtra(NoteActivity.EXTRA_DATE);
@@ -210,12 +218,15 @@ public class NotesFragment extends Fragment {
             noteViewModel.insert(note);
 
             Toast.makeText(getActivity(), "Saved", Toast.LENGTH_SHORT).show();
+
         } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
+
             int id = data.getIntExtra(NoteActivity.EXTRA_ID, -1);
             if (id == -1) {
                 Toast.makeText(getContext(), "Note Can't be Updated", Toast.LENGTH_SHORT).show();
                 return;
             }
+
             Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
             String title = data.getStringExtra(NoteActivity.EXTRA_TITLE);
             String description = data.getStringExtra(NoteActivity.EXTRA_DESCRIPTION);
@@ -225,18 +236,8 @@ public class NotesFragment extends Fragment {
             note.setId(id);
             noteViewModel.update(note);
 
-        } else if (requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_CANCELED) {
-            Toast.makeText(getContext(), "Saved To Draft", Toast.LENGTH_SHORT).show();
-
-            String title = data.getStringExtra(NoteActivity.EXTRA_TITLE);
-            String description = data.getStringExtra(NoteActivity.EXTRA_DESCRIPTION);
-            String timeStamp = data.getStringExtra(NoteActivity.EXTRA_DATE);
-
-            Note note = new Note(title, description, timeStamp);
-            noteViewModel.insert(note);
-
-
         } else {
+
             Toast.makeText(getActivity(), "Note not saved", Toast.LENGTH_SHORT).show();
         }
     }
@@ -254,7 +255,9 @@ public class NotesFragment extends Fragment {
      */
 
     public void showBottomSheetDialogFragment(final Note note) {
+
         BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
+        assert getFragmentManager() != null;
         bottomSheetFragment.show(getFragmentManager(), bottomSheetFragment.getTag());
 
         bottomSheetFragment.setmListener(new BottomSheetFragment.BottomSheetListener() {
@@ -267,16 +270,37 @@ public class NotesFragment extends Fragment {
                         break;
 
                     case R.id.bottom_sheet_copy:
+                        copyToClipBoard(note);
                         Toast.makeText(getContext(), "Copied", Toast.LENGTH_SHORT).show();
                         break;
 
                     case R.id.bottom_sheet_share:
-
+                        shareNote(note);
                         break;
                 }
             }
         });
     }
 
+
+    private void copyToClipBoard(Note note) {
+        String body = note.getTitle() + "\n" + note.getBody();
+        ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(getActivity()).getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText(note.getTitle(), body);
+        Log.i(TAG, note.getBody());
+        assert clipboard != null;
+        clipboard.setPrimaryClip(clip);
+    }
+
+
+    private void shareNote(Note note) {
+        String shareBody = note.getTitle() + "\n" + note.getBody();
+        String subject = note.getTitle();
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+        startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
+    }
 
 }

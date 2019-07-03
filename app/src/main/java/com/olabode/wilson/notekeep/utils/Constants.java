@@ -17,5 +17,14 @@ public class Constants {
         public static final String COLUMN_TIMESTAMP = "time_stamp";
     }
 
+    public class SharedPreferenceKeys {
+        public static final String FONT_PREFERENCE_KEY = "mode_text_size_pref";
+        public static final String TRASH_PREFERENCE_KEY = "modes_trash_pref";
+
+        public static final String FEEDBACK_PREFERENCE_KEY = "mode_feedback_pref";
+
+    }
+
+
 
 }

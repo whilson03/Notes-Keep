@@ -43,4 +43,8 @@ public interface NoteDao {
     void removeFavouriteNotes(Note note);
 
 
+//    @Query("SELECT * FROM notes_table WHERE id == 1")
+//    void checkIfEmpty();
+
+
 }

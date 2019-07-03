@@ -1,0 +1,47 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="General">
+
+        <ListPreference
+            android:defaultValue="20"
+            android:entries="@array/text_mode_preference_entries"
+            android:entryValues="@array/text_mode_preference_values"
+            android:icon="@drawable/ic_text_fields"
+            android:key="mode_text_size_pref"
+            android:persistent="true"
+            android:summary="@string/text_small"
+            android:title="FontSize" />
+
+
+        <SwitchPreferenceCompat
+            android:icon="@drawable/ic_delete_forever"
+            android:key="modes_trash_pref"
+            android:title="Auto Empty Trash"
+            app:summary="Empty trash after 30 days" />
+
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory android:title="Others">
+
+        <Preference
+            android:icon="@drawable/ic_security"
+            app:key="mode_policy_pref"
+            app:title="Privacy Policy">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://www.google.com" />
+        </Preference>
+
+
+        <Preference
+            android:icon="@drawable/ic_feedback"
+            app:key="mode_feedback_pref"
+            app:summary="Report technical issues or suggest new features"
+            app:title="Send feedback" />
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

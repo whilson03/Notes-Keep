@@ -12,6 +12,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 public class BottomSheetFragment extends BottomSheetDialogFragment {
     private BottomSheetListener mListener;
 
+    public static final String TAG = BottomSheetFragment.class.getSimpleName();
+
 
     public BottomSheetFragment() {
         // Required empty public constructor
@@ -28,11 +30,9 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.bottom_sheet, container, false);
 
-
         TextView deleteButton = rootView.findViewById(R.id.bottom_sheet_delete);
         TextView copyButton = rootView.findViewById(R.id.bottom_sheet_copy);
         TextView shareButton = rootView.findViewById(R.id.bottom_sheet_share);
-
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +49,6 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
                     mListener.onButtonClicked(view.getId());
                     dismiss();
                 }
-
             }
         });
 
@@ -63,13 +62,14 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
             }
         });
 
-
         return rootView;
     }
+
 
     public void setmListener(BottomSheetListener listener) {
         this.mListener = listener;
     }
+
 
     public interface BottomSheetListener {
         void onButtonClicked(int id);
@@ -86,4 +86,6 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
 //                    + " must implement BottomSheetListener");
 //        }
 //    }
+
+
 }

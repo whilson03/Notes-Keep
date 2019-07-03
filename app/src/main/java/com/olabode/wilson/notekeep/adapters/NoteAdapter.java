@@ -22,7 +22,6 @@ import com.olabode.wilson.notekeep.models.Note;
 public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
 
 
-
     private static DiffUtil.ItemCallback<Note> DIFF_CALLBACK = new DiffUtil.ItemCallback<Note>() {
         @Override
         public boolean areItemsTheSame(@NonNull Note oldItem, @NonNull Note newItem) {
@@ -42,7 +41,6 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
     private OnItemClickListener listener;
     private ToggleListener Tlistener;
     private OnItemLongClickListener LongListener;
-
 
 
     public NoteAdapter() {
@@ -82,21 +80,8 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
 
     }
 
-
-
-    /**
-     * interfaces
-     */
-    public interface OnItemClickListener {
-        void onItemClick(Note note);
-    }
-
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
-    }
-
-    public interface ToggleListener {
-        void onItemToggle(Note note, boolean isChecked);
     }
 
     public void setTlistener(ToggleListener tlistener) {
@@ -105,6 +90,17 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
 
     public void setLongListener(OnItemLongClickListener listener) {
         this.LongListener = listener;
+    }
+
+    /**
+     * interfaces
+     */
+    public interface OnItemClickListener {
+        void onItemClick(Note note);
+    }
+
+    public interface ToggleListener {
+        void onItemToggle(Note note, boolean isChecked);
     }
 
     public interface OnItemLongClickListener {

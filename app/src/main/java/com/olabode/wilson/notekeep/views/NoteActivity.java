@@ -2,7 +2,9 @@
 package com.olabode.wilson.notekeep.views;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.olabode.wilson.notekeep.R;
+import com.olabode.wilson.notekeep.utils.Constants;
 import com.olabode.wilson.notekeep.utils.HelperMethods;
 
 import java.util.Objects;
@@ -34,6 +37,7 @@ public class NoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note);
 
+
         editTextTitle = findViewById(R.id.edit_text_title);
         editTextDescription = findViewById(R.id.edit_text_description);
 
@@ -50,8 +54,10 @@ public class NoteActivity extends AppCompatActivity {
         } else {
             setTitle("Add Note");
         }
+        setFont();
 
     }
+
 
     private void saveNote() {
         String title = editTextTitle.getText().toString();
@@ -138,5 +144,36 @@ public class NoteActivity extends AppCompatActivity {
 
         }
     }
+
+
+    private void setFont() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(NoteActivity.this);
+        int fontSize = (int) Float.parseFloat(preferences.getString(Constants.SharedPreferenceKeys.FONT_PREFERENCE_KEY, "20"));
+
+
+        Log.i(TAG, "size " + fontSize);
+        switch (fontSize) {
+            case 14:
+                setEditTextSize(fontSize);
+
+                break;
+            case 20:
+                setEditTextSize(fontSize);
+                break;
+            case 24:
+                setEditTextSize(fontSize);
+                break;
+            case 28:
+                setEditTextSize(fontSize);
+                break;
+        }
+    }
+
+    private void setEditTextSize(float size) {
+        editTextDescription.setTextSize(size);
+        editTextTitle.setTextSize(size);
+
+    }
+
 }
 

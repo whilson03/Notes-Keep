@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -18,6 +19,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.navigation.NavigationView;
 import com.olabode.wilson.notekeep.views.FavouritesFragment;
 import com.olabode.wilson.notekeep.views.NotesFragment;
+import com.olabode.wilson.notekeep.views.SettingsFragment;
 import com.olabode.wilson.notekeep.views.TrashFragment;
 
 public class MainActivity extends AppCompatActivity
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity
             displaySelectedScreen(R.id.nav_notes);
             setFirstItemChecked();
         }
+//        enableStrictMode();
     }
 
     @Override
@@ -123,7 +126,6 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.nav_notes:
                 fragment = new NotesFragment();
-
                 break;
 
             case R.id.nav_favourites:
@@ -135,9 +137,8 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.nav_settings:
-
+                fragment = new SettingsFragment();
                 break;
-
 
             case R.id.nav_feedback:
                 sendFeedback();
@@ -172,5 +173,17 @@ public class MainActivity extends AppCompatActivity
     public void setFirstItemChecked() {
         Menu menu = navigationView.getMenu();
         menu.findItem(R.id.nav_notes).setChecked(true);
+    }
+
+
+    public void enableStrictMode() {
+        if (BuildConfig.DEBUG) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                    .detectAll().penaltyLog().build();
+
+            StrictMode.setThreadPolicy(policy);
+
+        }
+
     }
 }
