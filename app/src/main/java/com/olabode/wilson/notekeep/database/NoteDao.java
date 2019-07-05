@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -18,7 +19,8 @@ import java.util.List;
 @Dao
 public interface NoteDao {
 
-    @Insert
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Note note);
 
     @Delete
@@ -41,10 +43,4 @@ public interface NoteDao {
 
     @Update
     void removeFavouriteNotes(Note note);
-
-
-//    @Query("SELECT * FROM notes_table WHERE id == 1")
-//    void checkIfEmpty();
-
-
 }

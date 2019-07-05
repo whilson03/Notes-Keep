@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.olabode.wilson.notekeep.BottomSheetFragment;
 import com.olabode.wilson.notekeep.R;
 import com.olabode.wilson.notekeep.adapters.NoteAdapter;
@@ -43,8 +44,8 @@ import static android.app.Activity.RESULT_OK;
  */
 public class NotesFragment extends Fragment {
 
-    public static final int ADD_NOTE_REQUEST = 1;
-    public static final int EDIT_NOTE_REQUEST = 2;
+    private static final int ADD_NOTE_REQUEST = 1;
+    private static final int EDIT_NOTE_REQUEST = 2;
     private static final String TAG = NotesFragment.class.getSimpleName();
 
     private NoteViewModel noteViewModel;
@@ -52,8 +53,6 @@ public class NotesFragment extends Fragment {
 
     private Drawable icon;
     private ColorDrawable background;
-    private RecyclerView recyclerView;
-    private LinearLayoutManager layoutManager;
 
 
     public NotesFragment() {
@@ -62,7 +61,7 @@ public class NotesFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_notes, container, false);
@@ -84,14 +83,13 @@ public class NotesFragment extends Fragment {
         });
 
 
-        recyclerView = rootView.findViewById(R.id.recycler_view);
-        layoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
         adapter = new NoteAdapter();
         recyclerView.setAdapter(adapter);
-
 
 
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
@@ -100,11 +98,11 @@ public class NotesFragment extends Fragment {
             public void onChanged(@Nullable List<Note> notes) {
                 adapter.submitList(notes);
             }
-        });
+        }); 
 
 
-        /**
-         * handles swipe to delete recycler view
+        /*
+          handles swipe to delete recycler view
          */
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT |
                 ItemTouchHelper.RIGHT) {
@@ -154,11 +152,28 @@ public class NotesFragment extends Fragment {
 
                 switch (direction) {
                     case ItemTouchHelper.LEFT:
-                        noteViewModel.delete(adapter.getNoteAt(viewHolder.getAdapterPosition()));
+                        final Note note = adapter.getNoteAt(viewHolder.getAdapterPosition());
+                        noteViewModel.delete(note);
+
+                        Snackbar.make(viewHolder.itemView, "Undo Delete", Snackbar.LENGTH_LONG)
+                                .setAction("UND0", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        noteViewModel.insert(note);
+                                    }
+                                }).show();
                         break;
                     case ItemTouchHelper.RIGHT:
-                        Note note = adapter.getNoteAt(viewHolder.getAdapterPosition());
-                        noteViewModel.delete(note);
+                        final Note note1 = adapter.getNoteAt(viewHolder.getAdapterPosition());
+                        noteViewModel.delete(note1);
+
+                        Snackbar.make(viewHolder.itemView, "Undo Delete", Snackbar.LENGTH_LONG)
+                                .setAction("UND0", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        noteViewModel.insert(note1);
+                                    }
+                                }).show();
                         break;
 
                 }
@@ -254,7 +269,7 @@ public class NotesFragment extends Fragment {
      * inflate and communicate with the bottom sheet fragment via an interface
      */
 
-    public void showBottomSheetDialogFragment(final Note note) {
+    private void showBottomSheetDialogFragment(final Note note) {
 
         BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
         assert getFragmentManager() != null;
@@ -302,5 +317,6 @@ public class NotesFragment extends Fragment {
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
     }
+
 
 }

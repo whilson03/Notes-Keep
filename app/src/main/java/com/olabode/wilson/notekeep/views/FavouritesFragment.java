@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.olabode.wilson.notekeep.BottomSheetFragment;
 import com.olabode.wilson.notekeep.R;
 import com.olabode.wilson.notekeep.adapters.NoteAdapter;
@@ -139,11 +140,32 @@ public class FavouritesFragment extends Fragment {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 switch (direction) {
                     case ItemTouchHelper.LEFT:
-                        noteViewModel.delete(mNoteAdapter.getNoteAt(viewHolder.getAdapterPosition()));
-                        break;
-                    case ItemTouchHelper.RIGHT:
-                        Note note = mNoteAdapter.getNoteAt(viewHolder.getAdapterPosition());
+                        final Note note = mNoteAdapter.getNoteAt(viewHolder.getAdapterPosition());
                         noteViewModel.delete(note);
+
+                        Snackbar.make(viewHolder.itemView, "Undo Delete", Snackbar.LENGTH_LONG)
+                                .setAction("UND0", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        noteViewModel.insert(note);
+                                    }
+                                }).show();
+
+                        break;
+
+
+                    case ItemTouchHelper.RIGHT:
+                        final Note note1 = mNoteAdapter.getNoteAt(viewHolder.getAdapterPosition());
+                        noteViewModel.delete(note1);
+
+                        Snackbar.make(viewHolder.itemView, "Undo Delete", Snackbar.LENGTH_LONG)
+                                .setAction("UND0", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        noteViewModel.insert(note1);
+                                    }
+                                }).show();
+
                         break;
 
                 }
