@@ -1,11 +1,12 @@
 package com.olabode.wilson.notekeep.adapters;
 
-import android.util.Log;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
@@ -37,14 +38,16 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         }
     };
 
+    private Context context;
 
     private OnItemClickListener listener;
-    private ToggleListener Tlistener;
+    private OnToggleListener toggleListener;
     private OnItemLongClickListener LongListener;
 
 
-    public NoteAdapter() {
+    public NoteAdapter(Context context) {
         super(DIFF_CALLBACK);
+        this.context = context;
     }
 
     @NonNull
@@ -63,6 +66,14 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         holder.textViewDescription.setText(currentNote.getBody());
         holder.dateTextView.setText(currentNote.getTimeStamp());
 
+        // check if the note is a trash item..if it is
+        // do not show the add to favourites button
+        if (currentNote.getIsMovedToTrash() == 1) {
+            holder.favouriteButton.setVisibility(View.GONE);
+        }
+
+        // check if the note is also a favourite item.
+        // if it is a favourite item , show the star glowed..
         if (currentNote.getIsFavourite() == 1) {
             holder.favouriteButton.setChecked(true);
         } else {
@@ -70,22 +81,17 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         }
     }
 
-
     public Note getNoteAt(int position) {
-
         return getItem(position);
     }
 
-    public void addNoteBack(int pos, Note note) {
-
-    }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
 
-    public void setTlistener(ToggleListener tlistener) {
-        this.Tlistener = tlistener;
+    public void setOnToggleListener(OnToggleListener togglelistener) {
+        this.toggleListener = togglelistener;
     }
 
     public void setLongListener(OnItemLongClickListener listener) {
@@ -99,7 +105,7 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         void onItemClick(Note note);
     }
 
-    public interface ToggleListener {
+    public interface OnToggleListener {
         void onItemToggle(Note note, boolean isChecked);
     }
 
@@ -134,25 +140,32 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
             });
 
 
+            favouriteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (getNoteAt(getAdapterPosition()).getIsFavourite() != 0) {
+                        Toast.makeText(context, "Added To Favourite", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, "Removed From Favourite", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+
             favouriteButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    // get the current note item position that is being toggled
+                    int position = getAdapterPosition();
+
                     if (isChecked) {
-                        int position = getAdapterPosition();
-
-                        Log.i("toggle", " " + position);
-
-                        if (Tlistener != null && position != RecyclerView.NO_POSITION) {
-                            Tlistener.onItemToggle(getItem(position), true);
-
+                        if (toggleListener != null && position != RecyclerView.NO_POSITION) {
+                            toggleListener.onItemToggle(getItem(position), true);
                         }
 
                     } else {
-                        int position = getAdapterPosition();
 
-                        Log.i("toggle", " " + position);
-
-                        if (Tlistener != null && position != RecyclerView.NO_POSITION) {
-                            Tlistener.onItemToggle(getItem(position), false);
+                        if (toggleListener != null && position != RecyclerView.NO_POSITION) {
+                            toggleListener.onItemToggle(getItem(position), false);
                         }
                     }
                 }

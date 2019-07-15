@@ -24,6 +24,8 @@ public class Note {
     @ColumnInfo(name = "favourite")
     private int isFavourite = 0;
 
+    @ColumnInfo(name = "trash")
+    private int isMovedToTrash = 0;
 
     @ColumnInfo(name = Constants.DatabaseColumns.COLUMN_TIMESTAMP)
     private String timeStamp;
@@ -72,6 +74,14 @@ public class Note {
 
     public void setIsFavourite(int isFavourite) {
         this.isFavourite = isFavourite;
+    }
+
+    public int getIsMovedToTrash() {
+        return isMovedToTrash;
+    }
+
+    public void setIsMovedToTrash(int isMovedToTrash) {
+        this.isMovedToTrash = isMovedToTrash;
     }
 }
 

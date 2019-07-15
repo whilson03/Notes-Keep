@@ -44,9 +44,11 @@ import static android.app.Activity.RESULT_OK;
  */
 public class FavouritesFragment extends Fragment {
 
+    private static final String TAG = FavouritesFragment.class.getSimpleName();
+
     public static final int EDIT_NOTE_REQUEST = 4;
     private static final int ADD_NOTE_REQUEST = 5;
-    private static final String TAG = FavouritesFragment.class.getSimpleName();
+
     private NoteAdapter mNoteAdapter;
     private NoteViewModel noteViewModel;
 
@@ -61,13 +63,13 @@ public class FavouritesFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_favourites, container, false);
 
         //handle icon and background for swipe to delete layout
-        icon = ContextCompat.getDrawable(getActivity(),
+        icon = ContextCompat.getDrawable(Objects.requireNonNull(getActivity()),
                 R.drawable.ic_trash);
         background = new ColorDrawable(Color.RED);
 
@@ -77,7 +79,7 @@ public class FavouritesFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
 
 
-        mNoteAdapter = new NoteAdapter();
+        mNoteAdapter = new NoteAdapter(getContext());
         recyclerView.setAdapter(mNoteAdapter);
 
 
@@ -90,13 +92,14 @@ public class FavouritesFragment extends Fragment {
         });
 
 
-        /**
-         * handles swipe to delete recycler view
+        /*
+          handles swipe to delete recycler view
          */
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT |
                 ItemTouchHelper.RIGHT) {
             @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
+                                  @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
 
@@ -141,13 +144,21 @@ public class FavouritesFragment extends Fragment {
                 switch (direction) {
                     case ItemTouchHelper.LEFT:
                         final Note note = mNoteAdapter.getNoteAt(viewHolder.getAdapterPosition());
+
+                        // delete the note
                         noteViewModel.delete(note);
 
-                        Snackbar.make(viewHolder.itemView, "Undo Delete", Snackbar.LENGTH_LONG)
+                        Toast.makeText(getContext(), "Moved To Trash", Toast.LENGTH_SHORT).show();
+
+                        // re insert the note back to the table but now as a trash item..
+                        noteViewModel.addToTrash(note);
+
+                        Snackbar.make(viewHolder.itemView, "Undo Move To Trash", Snackbar.LENGTH_SHORT)
                                 .setAction("UND0", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        noteViewModel.insert(note);
+                                        noteViewModel.removeFromTrash(note);
+                                        noteViewModel.undoDeleteFavourite(note);
                                     }
                                 }).show();
 
@@ -156,20 +167,26 @@ public class FavouritesFragment extends Fragment {
 
                     case ItemTouchHelper.RIGHT:
                         final Note note1 = mNoteAdapter.getNoteAt(viewHolder.getAdapterPosition());
-                        noteViewModel.delete(note1);
 
-                        Snackbar.make(viewHolder.itemView, "Undo Delete", Snackbar.LENGTH_LONG)
+                        noteViewModel.delete(note1);
+                        Toast.makeText(getContext(), "Moved To Trash", Toast.LENGTH_SHORT).show();
+
+                        noteViewModel.addToTrash(note1);
+
+
+                        Snackbar.make(viewHolder.itemView, "Undo Move To Trash", Snackbar.LENGTH_SHORT)
                                 .setAction("UND0", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        noteViewModel.insert(note1);
+
+                                        noteViewModel.removeFromTrash(note1);
+                                        noteViewModel.undoDeleteFavourite(note1);
                                     }
                                 }).show();
-
                         break;
-
                 }
             }
+
         }).attachToRecyclerView(recyclerView);
 
         mNoteAdapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
@@ -185,7 +202,7 @@ public class FavouritesFragment extends Fragment {
 
 
         // Toggle for favourite
-        mNoteAdapter.setTlistener(new NoteAdapter.ToggleListener() {
+        mNoteAdapter.setOnToggleListener(new NoteAdapter.OnToggleListener() {
             @Override
             public void onItemToggle(Note note, boolean isChecked) {
                 if (!isChecked) {
@@ -242,7 +259,6 @@ public class FavouritesFragment extends Fragment {
             noteViewModel.update(note);
 
         } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_CANCELED) {
-            Log.i(TAG, "i was cancelled");
 
             Toast.makeText(getContext(), "Saved To Draft", Toast.LENGTH_SHORT).show();
             int id = data.getIntExtra(NoteActivity.EXTRA_ID, -1);
@@ -305,7 +321,7 @@ public class FavouritesFragment extends Fragment {
     }
 
 
-    private void copyToClipBoard(Note note) {
+    private void copyToClipBoard(@NonNull Note note) {
         String body = note.getTitle() + "\n" + note.getBody();
         ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(getActivity()).getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(note.getTitle(), body);
@@ -315,7 +331,7 @@ public class FavouritesFragment extends Fragment {
     }
 
 
-    private void shareNote(Note note) {
+    private void shareNote(@NonNull Note note) {
         String shareBody = note.getTitle() + "\n" + note.getBody();
         String subject = note.getTitle();
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);

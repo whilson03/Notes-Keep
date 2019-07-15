@@ -47,21 +47,12 @@
     <string name="text_small">Small</string>
     <string name="text_medium">Medium</string>
     <string name="text_large">Large</string>
+    <string name="search">Search</string>
 
+    <string name="tiny_size" translatable="false">14</string>
+    <string name="small_size" translatable="false">20</string>
+    <string name="medium_size" translatable="false">24</string>
+    <string name="large_size" translatable="false">28</string>
 
-    <string-array name="text_mode_preference_entries">
-        <item>@string/text_tiny</item>
-        <item>@string/text_small</item>
-        <item>@string/text_medium</item>
-        <item>@string/text_large</item>
-    </string-array>
-
-
-    <string-array name="text_mode_preference_values">
-        <item>14</item>
-        <item>20</item>
-        <item>24</item>
-        <item>28</item>
-    </string-array>
 
 </resources>

@@ -88,7 +88,7 @@ public class NotesFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
-        adapter = new NoteAdapter();
+        adapter = new NoteAdapter(getContext());
         recyclerView.setAdapter(adapter);
 
 
@@ -132,6 +132,7 @@ public class NotesFragment extends Fragment {
 
                     background.setBounds(itemView.getLeft(), itemView.getTop(),
                             itemView.getLeft() + ((int) dX) + backgroundCornerOffset, itemView.getBottom());
+
                 } else if (dX < 0) { // Swiping to the left
                     int iconLeft = itemView.getRight() - iconMargin - icon.getIntrinsicWidth();
                     int iconRight = itemView.getRight() - iconMargin;
@@ -153,25 +154,36 @@ public class NotesFragment extends Fragment {
                 switch (direction) {
                     case ItemTouchHelper.LEFT:
                         final Note note = adapter.getNoteAt(viewHolder.getAdapterPosition());
-                        noteViewModel.delete(note);
 
-                        Snackbar.make(viewHolder.itemView, "Undo Delete", Snackbar.LENGTH_LONG)
+                        noteViewModel.delete(note);
+                        Toast.makeText(getContext(), "Moved To Trash", Toast.LENGTH_SHORT).show();
+
+                        noteViewModel.addToTrash(note);
+
+                        Snackbar.make(viewHolder.itemView, "Undo Move To Trash", Snackbar.LENGTH_SHORT)
                                 .setAction("UND0", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
                                         noteViewModel.insert(note);
+                                        noteViewModel.removeFromTrash(note);
                                     }
                                 }).show();
                         break;
+
+
                     case ItemTouchHelper.RIGHT:
                         final Note note1 = adapter.getNoteAt(viewHolder.getAdapterPosition());
                         noteViewModel.delete(note1);
 
-                        Snackbar.make(viewHolder.itemView, "Undo Delete", Snackbar.LENGTH_LONG)
+                        Toast.makeText(getContext(), "Moved To Trash", Toast.LENGTH_SHORT).show();
+                        noteViewModel.addToTrash(note1);
+
+                        Snackbar.make(viewHolder.itemView, "Undo Move To Trash", Snackbar.LENGTH_SHORT)
                                 .setAction("UND0", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
                                         noteViewModel.insert(note1);
+                                        noteViewModel.removeFromTrash(note1);
                                     }
                                 }).show();
                         break;
@@ -193,21 +205,18 @@ public class NotesFragment extends Fragment {
 
 
         // Toggle for favourite
-        adapter.setTlistener(new NoteAdapter.ToggleListener() {
+        adapter.setOnToggleListener(new NoteAdapter.OnToggleListener() {
             @Override
             public void onItemToggle(Note note, boolean isChecked) {
                 if (isChecked) {
-//                    Toast.makeText(getContext(), "Added to Favourite", Toast.LENGTH_SHORT).show();
                     note.setIsFavourite(1);
                     noteViewModel.addToFavourite(note);
                 } else {
-//                    Toast.makeText(getContext(), "Removed from Favourites", Toast.LENGTH_SHORT).show();
                     note.setIsFavourite(0);
                     noteViewModel.removeFromFavourite(note);
                 }
             }
         });
-
 
         // long click event
         adapter.setLongListener(new NoteAdapter.OnItemLongClickListener() {
@@ -230,6 +239,7 @@ public class NotesFragment extends Fragment {
             String timeStamp = data.getStringExtra(NoteActivity.EXTRA_DATE);
 
             Note note = new Note(title, description, timeStamp);
+
             noteViewModel.insert(note);
 
             Toast.makeText(getActivity(), "Saved", Toast.LENGTH_SHORT).show();
@@ -298,7 +308,7 @@ public class NotesFragment extends Fragment {
     }
 
 
-    private void copyToClipBoard(Note note) {
+    private void copyToClipBoard(@NonNull Note note) {
         String body = note.getTitle() + "\n" + note.getBody();
         ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(getActivity()).getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(note.getTitle(), body);
@@ -308,7 +318,7 @@ public class NotesFragment extends Fragment {
     }
 
 
-    private void shareNote(Note note) {
+    private void shareNote(@NonNull Note note) {
         String shareBody = note.getTitle() + "\n" + note.getBody();
         String subject = note.getTitle();
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);

@@ -10,7 +10,7 @@
             android:icon="@drawable/ic_text_fields"
             android:key="mode_text_size_pref"
             android:persistent="true"
-            android:summary="@string/text_small"
+            android:summary="@string/text_medium"
             android:title="FontSize" />
 
 

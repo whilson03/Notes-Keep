@@ -19,12 +19,15 @@ public class NoteRepository {
     private NoteDao noteDao;
     private LiveData<List<Note>> allNotes;
     private LiveData<List<Note>> allFavouriteNotes;
+    private LiveData<List<Note>> allFavouriteNotesFromTrash;
 
     public NoteRepository(Application application) {
         NoteDatabase noteDatabase = NoteDatabase.getInstance(application);
         noteDao = noteDatabase.noteDao();
         allNotes = noteDao.getAllNotes();
         allFavouriteNotes = noteDao.getAllFavouriteNotes();
+        allFavouriteNotesFromTrash = noteDao.getAllNotesFromTrash();
+
     }
 
     public void insert(Note note) {
@@ -58,6 +61,38 @@ public class NoteRepository {
     public LiveData<List<Note>> getAllFavouriteNotes() {
         return allFavouriteNotes;
     }
+
+    /**
+     * add to trash by changing the isTrash  value from zero to 1
+     *
+     * @param note
+     */
+    public void addToTrash(Note note) {
+        new AddNoteToTrashAsyncTask(noteDao).execute(note);
+    }
+
+    public void removeFromTrash(Note note) {
+        new RemoveNoteFromTrashAsyncTask(noteDao).execute(note);
+    }
+
+    public void undoDeleteFavourite(Note note) {
+        new UndoDeleteFavAsyncTask(noteDao).execute(note);
+    }
+
+
+    public LiveData<List<Note>> getAllNotesFromTrash() {
+        return allFavouriteNotesFromTrash;
+    }
+
+
+
+
+
+
+
+
+
+
 
 
     /***
@@ -153,6 +188,60 @@ public class NoteRepository {
             return null;
         }
     }
+
+    private static class AddNoteToTrashAsyncTask extends AsyncTask<Note, Void, Void> {
+        private NoteDao noteDao;
+
+        public AddNoteToTrashAsyncTask(NoteDao noteDao) {
+            this.noteDao = noteDao;
+        }
+
+        @Override
+        protected Void doInBackground(Note... notes) {
+            Note note = notes[0];
+            note.setIsMovedToTrash(1);
+            note.setIsFavourite(0);
+            noteDao.insert(note);
+            return null;
+        }
+    }
+
+
+    private static class RemoveNoteFromTrashAsyncTask extends AsyncTask<Note, Void, Void> {
+        private NoteDao noteDao;
+
+        public RemoveNoteFromTrashAsyncTask(NoteDao noteDao) {
+            this.noteDao = noteDao;
+        }
+
+        @Override
+        protected Void doInBackground(Note... notes) {
+            Note note = notes[0];
+            note.setIsMovedToTrash(0);
+            note.setIsFavourite(0);
+            noteDao.insert(note);
+            return null;
+        }
+    }
+
+
+    private static class UndoDeleteFavAsyncTask extends AsyncTask<Note, Void, Void> {
+        private NoteDao noteDao;
+
+        public UndoDeleteFavAsyncTask(NoteDao noteDao) {
+            this.noteDao = noteDao;
+        }
+
+        @Override
+        protected Void doInBackground(Note... notes) {
+            Note note = notes[0];
+            note.setIsMovedToTrash(0);
+            note.setIsFavourite(1);
+            noteDao.insert(note);
+            return null;
+        }
+    }
+
 
 
 }

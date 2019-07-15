@@ -32,15 +32,19 @@ public interface NoteDao {
     @Query("DELETE FROM notes_table")
     void deleteAllNotes();
 
-    @Query("SELECT * FROM notes_table ORDER BY id DESC")
+    @Query("SELECT * FROM notes_table WHERE trash == 0  ORDER BY ID DESC ")
     LiveData<List<Note>> getAllNotes();
 
     @Query("SELECT * FROM notes_table WHERE favourite == 1 ")
     LiveData<List<Note>> getAllFavouriteNotes();
+
+    @Query("SELECT * FROM notes_table WHERE trash == 1")
+    LiveData<List<Note>> getAllNotesFromTrash();
 
     @Update
     void addToFavourite(Note note);
 
     @Update
     void removeFavouriteNotes(Note note);
+
 }

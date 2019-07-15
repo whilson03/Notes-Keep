@@ -19,12 +19,14 @@ public class NoteViewModel extends AndroidViewModel {
     private NoteRepository repository;
     private LiveData<List<Note>> allNotes;
     private LiveData<List<Note>> allFavourites;
+    private LiveData<List<Note>> allTrashNotes;
 
     public NoteViewModel(@NonNull Application application) {
         super(application);
         repository = new NoteRepository(application);
         allNotes = repository.getAllNotes();
         allFavourites = repository.getAllFavouriteNotes();
+        allTrashNotes = repository.getAllNotesFromTrash();
     }
 
     public void insert(Note note) {
@@ -45,7 +47,6 @@ public class NoteViewModel extends AndroidViewModel {
 
     public void removeFromFavourite(Note note) {
         repository.removeNoteFromFavourite(note);
-
     }
 
     public void deleteAllNotes() {
@@ -58,5 +59,21 @@ public class NoteViewModel extends AndroidViewModel {
 
     public LiveData<List<Note>> getAllFavouriteNotes() {
         return allFavourites;
+    }
+
+    public LiveData<List<Note>> getAllTrashNotes() {
+        return allTrashNotes;
+    }
+
+    public void addToTrash(Note note) {
+        repository.addToTrash(note);
+    }
+
+    public void removeFromTrash(Note note) {
+        repository.removeFromTrash(note);
+    }
+
+    public void undoDeleteFavourite(Note note) {
+        repository.undoDeleteFavourite(note);
     }
 }

@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="text_mode_preference_entries">
+        <item>@string/text_tiny</item>
+        <item>@string/text_small</item>
+        <item>@string/text_medium</item>
+        <item>@string/text_large</item>
+    </string-array>
 
+
+    <string-array name="text_mode_preference_values">
+        <item>@string/tiny_size</item>
+        <item>@string/small_size</item>
+        <item>@string/medium_size</item>
+        <item>@string/large_size</item>
+    </string-array>
 </resources>
