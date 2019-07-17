@@ -21,12 +21,14 @@ public class NoteRepository {
     private LiveData<List<Note>> allFavouriteNotes;
     private LiveData<List<Note>> allFavouriteNotesFromTrash;
 
+
     public NoteRepository(Application application) {
         NoteDatabase noteDatabase = NoteDatabase.getInstance(application);
         noteDao = noteDatabase.noteDao();
         allNotes = noteDao.getAllNotes();
         allFavouriteNotes = noteDao.getAllFavouriteNotes();
         allFavouriteNotesFromTrash = noteDao.getAllNotesFromTrash();
+
 
     }
 
@@ -62,6 +64,11 @@ public class NoteRepository {
         return allFavouriteNotes;
     }
 
+    public void emptyFavourite() {
+        new DeleteAllFavouriteAsyncTask(noteDao).execute();
+    }
+
+
     /**
      * add to trash by changing the isTrash  value from zero to 1
      *
@@ -84,10 +91,9 @@ public class NoteRepository {
         return allFavouriteNotesFromTrash;
     }
 
-
-
-
-
+    public void emptyTrash() {
+        new EmptyTrashAsyncTask(noteDao).execute();
+    }
 
 
 
@@ -207,6 +213,22 @@ public class NoteRepository {
     }
 
 
+    private static class EmptyTrashAsyncTask extends AsyncTask<Note, Void, Void> {
+        private NoteDao noteDao;
+
+        public EmptyTrashAsyncTask(NoteDao noteDao) {
+            this.noteDao = noteDao;
+        }
+
+        @Override
+        protected Void doInBackground(Note... notes) {
+            noteDao.deleteAllFromTrash();
+            return null;
+        }
+    }
+
+
+
     private static class RemoveNoteFromTrashAsyncTask extends AsyncTask<Note, Void, Void> {
         private NoteDao noteDao;
 
@@ -241,6 +263,23 @@ public class NoteRepository {
             return null;
         }
     }
+
+
+    private static class DeleteAllFavouriteAsyncTask extends AsyncTask<Note, Void, Void> {
+        private NoteDao noteDao;
+
+        public DeleteAllFavouriteAsyncTask(NoteDao noteDao) {
+            this.noteDao = noteDao;
+
+        }
+
+        @Override
+        protected Void doInBackground(Note... notes) {
+            noteDao.deleteAllfavouriteList();
+            return null;
+        }
+    }
+
 
 
 

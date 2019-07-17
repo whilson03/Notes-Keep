@@ -4,6 +4,9 @@ package com.olabode.wilson.notekeep.views;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -49,6 +52,7 @@ public class TrashFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_trash, container, false);
+        setHasOptionsMenu(true);
 
 
         RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view);
@@ -132,6 +136,23 @@ public class TrashFragment extends Fragment {
         } else {
             Toast.makeText(getActivity(), "Note not saved", Toast.LENGTH_SHORT).show();
         }
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_trash_frag, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete_all_from_trash:
+                Toast.makeText(getContext(), "Deleting permanently...", Toast.LENGTH_SHORT).show();
+                trashViewModel.emptyTrash();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

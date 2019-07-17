@@ -1,9 +1,11 @@
 package com.olabode.wilson.notekeep.views;
 
 
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,6 +14,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -44,6 +49,7 @@ import static android.app.Activity.RESULT_OK;
  */
 public class FavouritesFragment extends Fragment {
 
+
     private static final String TAG = FavouritesFragment.class.getSimpleName();
 
     public static final int EDIT_NOTE_REQUEST = 4;
@@ -67,6 +73,7 @@ public class FavouritesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_favourites, container, false);
+        setHasOptionsMenu(true);
 
         //handle icon and background for swipe to delete layout
         icon = ContextCompat.getDrawable(Objects.requireNonNull(getActivity()),
@@ -339,6 +346,41 @@ public class FavouritesFragment extends Fragment {
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_favourite_frag, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete_all_favourite_notes:
+                confirmDeleteDialog();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    private void confirmDeleteDialog() {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Delete All From favourite")
+                .setMessage("Are you sure want to delete all favourite  ?\n" +
+                        "Notes will all be moved to Trash")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getContext(), "Moving To Trash..", Toast.LENGTH_SHORT).show();
+                        noteViewModel.emptyFavourite();
+                    }
+                }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+            }
+        }).show();
     }
 
 }

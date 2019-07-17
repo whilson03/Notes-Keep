@@ -65,9 +65,14 @@ public class NoteActivity extends AppCompatActivity {
         String description = editTextDescription.getText().toString();
         String timeStamp = HelperMethods.getDate();
 
-        if (title.trim().isEmpty() || description.trim().isEmpty()) {
+
+        if (title.trim().isEmpty() && description.trim().isEmpty()) {
             Toast.makeText(this, "Please insert a title and description", Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        if (title.trim().isEmpty() && !description.trim().isEmpty()) {
+            title = "No title";
         }
 
         Intent data = new Intent();
@@ -96,6 +101,8 @@ public class NoteActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.save_note) {
             saveNote();
             return true;
+        } else if (item.getItemId() == R.id.change_color) {
+            Toast.makeText(this, "Change note colour", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -103,8 +110,9 @@ public class NoteActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        saveDraft();
         super.onBackPressed();
+        saveDraft();
+        Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -125,7 +133,7 @@ public class NoteActivity extends AppCompatActivity {
             Log.i(TAG, "save draft empty title");
 
             Intent data = new Intent();
-            data.putExtra(EXTRA_TITLE, "no title");
+            data.putExtra(EXTRA_TITLE, "No Title");
             data.putExtra(EXTRA_DESCRIPTION, description);
             data.putExtra(EXTRA_DATE, timeStamp);
 
@@ -148,13 +156,9 @@ public class NoteActivity extends AppCompatActivity {
     private void setFont() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(NoteActivity.this);
         int fontSize = (int) Float.parseFloat(preferences.getString(Constants.SharedPreferenceKeys.FONT_PREFERENCE_KEY, "20"));
-
-
-        Log.i(TAG, "size " + fontSize);
         switch (fontSize) {
             case 14:
                 setEditTextSize(fontSize);
-
                 break;
             case 20:
                 setEditTextSize(fontSize);
@@ -168,6 +172,11 @@ public class NoteActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * increase edit text size dynamically based on the specified size.
+     *
+     * @param size
+     */
     private void setEditTextSize(float size) {
         editTextDescription.setTextSize(size);
         editTextTitle.setTextSize(size);

@@ -1,9 +1,11 @@
 package com.olabode.wilson.notekeep.views;
 
 
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,6 +14,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -65,6 +70,7 @@ public class NotesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_notes, container, false);
+        setHasOptionsMenu(true);
 
 
         //handle icon and background for swipe to delete layout
@@ -154,9 +160,7 @@ public class NotesFragment extends Fragment {
                 switch (direction) {
                     case ItemTouchHelper.LEFT:
                         final Note note = adapter.getNoteAt(viewHolder.getAdapterPosition());
-
                         noteViewModel.delete(note);
-                        Toast.makeText(getContext(), "Moved To Trash", Toast.LENGTH_SHORT).show();
 
                         noteViewModel.addToTrash(note);
 
@@ -175,7 +179,6 @@ public class NotesFragment extends Fragment {
                         final Note note1 = adapter.getNoteAt(viewHolder.getAdapterPosition());
                         noteViewModel.delete(note1);
 
-                        Toast.makeText(getContext(), "Moved To Trash", Toast.LENGTH_SHORT).show();
                         noteViewModel.addToTrash(note1);
 
                         Snackbar.make(viewHolder.itemView, "Undo Move To Trash", Snackbar.LENGTH_SHORT)
@@ -269,6 +272,21 @@ public class NotesFragment extends Fragment {
 
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_notes_frag, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete_all_notes:
+                confirmDeleteDialog();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Objects.requireNonNull(getActivity()).setTitle("Notes");
@@ -308,9 +326,17 @@ public class NotesFragment extends Fragment {
     }
 
 
+    /**
+     * helper function to copy note to clip board
+     *
+     * @param note
+     */
+
     private void copyToClipBoard(@NonNull Note note) {
         String body = note.getTitle() + "\n" + note.getBody();
-        ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(getActivity()).getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipboardManager clipboard = (ClipboardManager) Objects.
+                requireNonNull(getActivity()).getSystemService(Context.CLIPBOARD_SERVICE);
+
         ClipData clip = ClipData.newPlainText(note.getTitle(), body);
         Log.i(TAG, note.getBody());
         assert clipboard != null;
@@ -326,6 +352,26 @@ public class NotesFragment extends Fragment {
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
+    }
+
+
+    private void confirmDeleteDialog() {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Delete All Notes")
+                .setMessage("Are you sure want to delete all notes ?\n" +
+                        "Notes will all be moved to Trash")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getContext(), "Moving To Trash..", Toast.LENGTH_SHORT).show();
+                        noteViewModel.moveAllNotesToTrash();
+                    }
+                }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        }).show();
     }
 
 

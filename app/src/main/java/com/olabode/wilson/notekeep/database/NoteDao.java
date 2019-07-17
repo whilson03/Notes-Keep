@@ -29,7 +29,7 @@ public interface NoteDao {
     @Update
     void update(Note note);
 
-    @Query("DELETE FROM notes_table")
+    @Query("UPDATE NOTES_TABLE SET trash = 1, favourite = 0")
     void deleteAllNotes();
 
     @Query("SELECT * FROM notes_table WHERE trash == 0  ORDER BY ID DESC ")
@@ -46,5 +46,15 @@ public interface NoteDao {
 
     @Update
     void removeFavouriteNotes(Note note);
+
+    @Query("UPDATE NOTES_TABLE SET trash = 1, favourite = 0 WHERE favourite == 1")
+    void deleteAllfavouriteList();
+
+
+    @Query("DELETE  FROM notes_table WHERE trash == 1")
+    void deleteAllFromTrash();
+
+
+
 
 }

@@ -3,14 +3,23 @@
 
     <PreferenceCategory android:title="General">
 
+
         <ListPreference
-            android:defaultValue="20"
+
+            android:icon="@drawable/ic_text_format"
+            android:key="mode_font_style"
+            android:title="Font Style"
+
+            />
+
+        <ListPreference
+            android:defaultValue="@string/small_size"
             android:entries="@array/text_mode_preference_entries"
             android:entryValues="@array/text_mode_preference_values"
             android:icon="@drawable/ic_text_fields"
             android:key="mode_text_size_pref"
             android:persistent="true"
-            android:summary="@string/text_medium"
+            android:summary="@string/text_small"
             android:title="FontSize" />
 
 

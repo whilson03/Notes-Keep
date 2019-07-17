@@ -5,7 +5,7 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">Every idea is worth keeping…</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings" translatable="false">Settings</string>
 
 
     <string name="menu_share">Share</string>
@@ -17,7 +17,7 @@
     <string name="settings">Settings</string>
     <string name="feedback">FeedBack</string>
 
-
+    <string name="colour">colour</string>
     <string name="description">Description</string>
     <string name="save">Save</string>
 
@@ -37,11 +37,13 @@
     <string name="slide_2_title">Favourites</string>
     <string name="slide_2_desc">Order your favourite notes!</string>
 
-    <string name="slide_3_title">Trash</string>
-    <string name="slide_3_desc">Deleted notes are moved to trash!</string>
+    <string name="slide_3_title">Share</string>
+    <string name="slide_3_desc">Share important details with friends!</string>
     <string name="copy">Copy</string>
     <string name="share_using">share with</string>
 
+
+    <!-- text size entries text -->
 
     <string name="text_tiny">tiny</string>
     <string name="text_small">Small</string>
@@ -49,10 +51,19 @@
     <string name="text_large">Large</string>
     <string name="search">Search</string>
 
+    <!-- text size values -->
     <string name="tiny_size" translatable="false">14</string>
     <string name="small_size" translatable="false">20</string>
     <string name="medium_size" translatable="false">24</string>
     <string name="large_size" translatable="false">28</string>
+
+
+    <string name="font_serif">Serif</string>
+    <string name="font_casual">Serif</string>
+    <string name="font_italics">Serif</string>
+    <string name="delete_all_notes">Delete All Notes</string>
+    <string name="mark">Mark</string>
+    <string name="delete_all_favourites">Delete all Favourites</string>
 
 
 </resources>
