@@ -5,3 +5,4 @@ Application uses Androidx
 * undo delete
 * Preference Screen
 * Shared Preferences
+* Modal Bottom Sheet
