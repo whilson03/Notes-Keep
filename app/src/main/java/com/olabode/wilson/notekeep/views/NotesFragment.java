@@ -308,8 +308,8 @@ public class NotesFragment extends Fragment {
             public void onButtonClicked(int id) {
                 switch (id) {
                     case R.id.bottom_sheet_delete:
-                        noteViewModel.delete(note);
-                        Toast.makeText(getContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                        noteViewModel.addToTrash(note);
+                        Toast.makeText(getContext(), "Moved To Trash", Toast.LENGTH_SHORT).show();
                         break;
 
                     case R.id.bottom_sheet_copy:

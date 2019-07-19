@@ -27,9 +27,6 @@ import com.olabode.wilson.notekeep.viewmodels.NoteViewModel;
 import java.util.List;
 import java.util.Objects;
 
-import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_OK;
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -76,11 +73,12 @@ public class TrashFragment extends Fragment {
         adapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Note note) {
-                Intent intent = new Intent(getActivity(), NoteActivity.class);
-                intent.putExtra(NoteActivity.EXTRA_ID, note.getId());
-                intent.putExtra(NoteActivity.EXTRA_TITLE, note.getTitle());
-                intent.putExtra(NoteActivity.EXTRA_DESCRIPTION, note.getBody());
-                startActivityForResult(intent, EDIT_NOTE_REQUEST);
+                Intent intent = new Intent(getActivity(), ViewTrashNoteActivity.class);
+                intent.putExtra("id", note.getId());
+                intent.putExtra("title", note.getTitle());
+                intent.putExtra("description", note.getBody());
+                intent.putExtra("date", note.getTimeStamp());
+                startActivity(intent);
             }
         });
 
@@ -95,48 +93,6 @@ public class TrashFragment extends Fragment {
     }
 
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
-
-            int id = data.getIntExtra(NoteActivity.EXTRA_ID, -1);
-            if (id == -1) {
-                Toast.makeText(getContext(), "Note Can't be Updated", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
-            String title = data.getStringExtra(NoteActivity.EXTRA_TITLE);
-            String description = data.getStringExtra(NoteActivity.EXTRA_DESCRIPTION);
-            String timeStamp = data.getStringExtra(NoteActivity.EXTRA_DATE);
-
-            Note note = new Note(title, description, timeStamp);
-            note.setId(id);
-            trashViewModel.update(note);
-
-        } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_CANCELED) {
-
-
-            Toast.makeText(getContext(), "Saved To Draft", Toast.LENGTH_SHORT).show();
-            int id = data.getIntExtra(NoteActivity.EXTRA_ID, -1);
-            if (id == -1) {
-                Toast.makeText(getContext(), "Note Can't be Updated", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            String title = data.getStringExtra(NoteActivity.EXTRA_TITLE);
-            String description = data.getStringExtra(NoteActivity.EXTRA_DESCRIPTION);
-            String timeStamp = data.getStringExtra(NoteActivity.EXTRA_DATE);
-
-            Note note = new Note(title, description, timeStamp);
-            note.setId(id);
-            trashViewModel.update(note);
-
-
-        } else {
-            Toast.makeText(getActivity(), "Note not saved", Toast.LENGTH_SHORT).show();
-        }
-    }
 
 
     @Override

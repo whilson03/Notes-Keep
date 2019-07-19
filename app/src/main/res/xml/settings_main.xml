@@ -18,7 +18,6 @@
             android:entryValues="@array/text_mode_preference_values"
             android:icon="@drawable/ic_text_fields"
             android:key="mode_text_size_pref"
-            android:persistent="true"
             android:summary="@string/text_small"
             android:title="FontSize" />
 

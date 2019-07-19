@@ -64,6 +64,8 @@
     <string name="delete_all_notes">Delete All Notes</string>
     <string name="mark">Mark</string>
     <string name="delete_all_favourites">Delete all Favourites</string>
+    <string name="restore_note">Restore Note</string>
+    <string name="delete_permanently">Delete Permanently</string>
 
 
 </resources>

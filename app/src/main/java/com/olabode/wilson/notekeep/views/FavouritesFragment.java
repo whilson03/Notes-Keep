@@ -301,8 +301,9 @@ public class FavouritesFragment extends Fragment {
      * inflate and communicate with the bottom sheet fragment via an interface
      */
 
-    public void showBottomSheetDialogFragment(final Note note) {
+    private void showBottomSheetDialogFragment(final Note note) {
         BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
+        assert getFragmentManager() != null;
         bottomSheetFragment.show(getFragmentManager(), bottomSheetFragment.getTag());
 
         bottomSheetFragment.setmListener(new BottomSheetFragment.BottomSheetListener() {
@@ -310,8 +311,8 @@ public class FavouritesFragment extends Fragment {
             public void onButtonClicked(int id) {
                 switch (id) {
                     case R.id.bottom_sheet_delete:
-                        noteViewModel.delete(note);
-                        Toast.makeText(getContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                        noteViewModel.addToTrash(note);
+                        Toast.makeText(getContext(), "Moved To Trash", Toast.LENGTH_SHORT).show();
                         break;
 
                     case R.id.bottom_sheet_copy:
