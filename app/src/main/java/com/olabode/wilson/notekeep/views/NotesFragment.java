@@ -12,7 +12,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -51,7 +50,7 @@ public class NotesFragment extends Fragment {
 
     private static final int ADD_NOTE_REQUEST = 1;
     private static final int EDIT_NOTE_REQUEST = 2;
-    private static final String TAG = NotesFragment.class.getSimpleName();
+    //private static final String TAG = NotesFragment.class.getSimpleName();
 
     private NoteViewModel noteViewModel;
     private NoteAdapter adapter;
@@ -303,7 +302,7 @@ public class NotesFragment extends Fragment {
         assert getFragmentManager() != null;
         bottomSheetFragment.show(getFragmentManager(), bottomSheetFragment.getTag());
 
-        bottomSheetFragment.setmListener(new BottomSheetFragment.BottomSheetListener() {
+        bottomSheetFragment.setOnBottomSheetClickListener(new BottomSheetFragment.BottomSheetListener() {
             @Override
             public void onButtonClicked(int id) {
                 switch (id) {
@@ -314,7 +313,7 @@ public class NotesFragment extends Fragment {
 
                     case R.id.bottom_sheet_copy:
                         copyToClipBoard(note);
-                        Toast.makeText(getContext(), "Copied", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Copied To Clipboard", Toast.LENGTH_SHORT).show();
                         break;
 
                     case R.id.bottom_sheet_share:
@@ -328,8 +327,6 @@ public class NotesFragment extends Fragment {
 
     /**
      * helper function to copy note to clip board
-     *
-     * @param note
      */
 
     private void copyToClipBoard(@NonNull Note note) {
@@ -338,7 +335,7 @@ public class NotesFragment extends Fragment {
                 requireNonNull(getActivity()).getSystemService(Context.CLIPBOARD_SERVICE);
 
         ClipData clip = ClipData.newPlainText(note.getTitle(), body);
-        Log.i(TAG, note.getBody());
+
         assert clipboard != null;
         clipboard.setPrimaryClip(clip);
     }

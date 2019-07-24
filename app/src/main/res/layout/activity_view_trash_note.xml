@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/lightYellow"
     android:orientation="vertical"
+    android:id="@+id/trash_view_note_layout"
     android:padding="16dp"
     tools:context=".views.ViewTrashNoteActivity">
 

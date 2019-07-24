@@ -32,9 +32,6 @@ import java.util.Objects;
  */
 public class TrashFragment extends Fragment {
 
-    public static final String TAG = TrashFragment.class.getSimpleName();
-
-    private static final int EDIT_NOTE_REQUEST = 2;
     private NoteViewModel trashViewModel;
     private NoteAdapter adapter;
 
@@ -45,7 +42,7 @@ public class TrashFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_trash, container, false);
@@ -102,11 +99,9 @@ public class TrashFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.delete_all_from_trash:
-                Toast.makeText(getContext(), "Deleting permanently...", Toast.LENGTH_SHORT).show();
-                trashViewModel.emptyTrash();
-                break;
+        if (item.getItemId() == R.id.delete_all_from_trash) {
+            Toast.makeText(getContext(), "Deleting permanently...", Toast.LENGTH_SHORT).show();
+            trashViewModel.emptyTrash();
         }
         return super.onOptionsItemSelected(item);
     }

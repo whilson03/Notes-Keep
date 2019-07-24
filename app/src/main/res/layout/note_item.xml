@@ -9,9 +9,10 @@
     app:cardBackgroundColor="@color/lightYellow">
 
     <RelativeLayout
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp">
+        android:padding="5dp">
 
 
         <View
@@ -38,6 +39,7 @@
             tools:text="@string/title" />
 
         <TextView
+            android:fontFamily="sans-serif-condensed-medium"
             android:layout_marginStart="12dp"
             android:id="@+id/text_view_description"
             android:layout_width="wrap_content"
@@ -47,6 +49,7 @@
             android:layout_marginBottom="2dp"
             android:maxLines="2"
             android:textSize="16sp"
+            android:paddingBottom="1dp"
             android:textStyle="italic"
             tools:text="@string/description" />
 

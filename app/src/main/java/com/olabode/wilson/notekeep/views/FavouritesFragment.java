@@ -306,7 +306,7 @@ public class FavouritesFragment extends Fragment {
         assert getFragmentManager() != null;
         bottomSheetFragment.show(getFragmentManager(), bottomSheetFragment.getTag());
 
-        bottomSheetFragment.setmListener(new BottomSheetFragment.BottomSheetListener() {
+        bottomSheetFragment.setOnBottomSheetClickListener(new BottomSheetFragment.BottomSheetListener() {
             @Override
             public void onButtonClicked(int id) {
                 switch (id) {

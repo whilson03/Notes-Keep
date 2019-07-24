@@ -2,11 +2,13 @@ package com.olabode.wilson.notekeep.views;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,6 +21,7 @@ import com.olabode.wilson.notekeep.viewmodels.NoteViewModel;
 
 public class ViewTrashNoteActivity extends AppCompatActivity {
 
+    private LinearLayout mNoteLayout;
     private NoteViewModel noteViewModel;
     private int id;
     private String title;
@@ -30,13 +33,14 @@ public class ViewTrashNoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_trash_note);
 
-
+        mNoteLayout = findViewById(R.id.trash_view_note_layout);
         EditText editTextTitle = findViewById(R.id.edit_text_title);
         EditText editTextDescription = findViewById(R.id.edit_text_description);
 
         editTextDescription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.i("clicked ", " clicked");
                 Toast.makeText(ViewTrashNoteActivity.this, "NOTE CANNOT BE EDITED IN TRASH", Toast.LENGTH_SHORT)
                         .show();
             }

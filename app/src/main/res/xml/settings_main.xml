@@ -6,13 +6,6 @@
 
         <ListPreference
 
-            android:icon="@drawable/ic_text_format"
-            android:key="mode_font_style"
-            android:title="Font Style"
-
-            />
-
-        <ListPreference
             android:defaultValue="@string/small_size"
             android:entries="@array/text_mode_preference_entries"
             android:entryValues="@array/text_mode_preference_values"
