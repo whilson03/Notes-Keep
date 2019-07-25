@@ -1,6 +1,8 @@
 package com.olabode.wilson.notekeep.views;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.olabode.wilson.notekeep.R;
+import com.olabode.wilson.notekeep.TrashBottomSheet;
 import com.olabode.wilson.notekeep.adapters.NoteAdapter;
 import com.olabode.wilson.notekeep.models.Note;
 import com.olabode.wilson.notekeep.viewmodels.NoteViewModel;
@@ -80,8 +83,41 @@ public class TrashFragment extends Fragment {
         });
 
 
+        adapter.setLongListener(new NoteAdapter.OnItemLongClickListener() {
+            @Override
+            public void OnItemLongClick(Note note) {
+                showBottomSheet(note);
+            }
+        });
+
+
         return rootView;
     }
+
+    private void showBottomSheet(final Note note) {
+        TrashBottomSheet bottomSheet = new TrashBottomSheet();
+        assert getFragmentManager() != null;
+        bottomSheet.show(getFragmentManager(), bottomSheet.getTag());
+
+        bottomSheet.setOnBottomSheetItemClickedListener(new TrashBottomSheet.BottomSheetListener() {
+            @Override
+            public void onBottomSheetItemClicked(int id) {
+                switch (id) {
+                    case R.id.restore_note:
+                        // res= insert note after deleting
+                        note.setIsMovedToTrash(0);
+                        trashViewModel.update(note);
+                        Toast.makeText(getContext(), "Restored", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.delete_note:
+                        trashViewModel.delete(note);
+                        Toast.makeText(getContext(), "Deleting", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        });
+    }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -100,10 +136,27 @@ public class TrashFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.delete_all_from_trash) {
-            Toast.makeText(getContext(), "Deleting permanently...", Toast.LENGTH_SHORT).show();
-            trashViewModel.emptyTrash();
+            confirmDeleteDialog();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void confirmDeleteDialog() {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Empty Trash")
+                .setMessage("Are you sure want to empty trash ?\n" +
+                        "Notes will be deleted permanently")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getContext(), "Emptying Trash...", Toast.LENGTH_SHORT).show();
+                        trashViewModel.emptyTrash();
+                    }
+                }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+            }
+        }).show();
     }
 
 }

@@ -41,7 +41,6 @@ import com.olabode.wilson.notekeep.viewmodels.NoteViewModel;
 import java.util.List;
 import java.util.Objects;
 
-import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
 /**
@@ -264,24 +263,6 @@ public class FavouritesFragment extends Fragment {
             note.setId(id);
             note.setIsFavourite(1);
             noteViewModel.update(note);
-
-        } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_CANCELED) {
-
-            Toast.makeText(getContext(), "Saved To Draft", Toast.LENGTH_SHORT).show();
-            int id = data.getIntExtra(NoteActivity.EXTRA_ID, -1);
-            if (id == -1) {
-                Toast.makeText(getContext(), "Note Can't be Updated", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            String title = data.getStringExtra(NoteActivity.EXTRA_TITLE);
-            String description = data.getStringExtra(NoteActivity.EXTRA_DESCRIPTION);
-            String timeStamp = data.getStringExtra(NoteActivity.EXTRA_DATE);
-
-            Note note = new Note(title, description, timeStamp);
-            note.setId(id);
-            note.setIsFavourite(1);
-            noteViewModel.update(note);
-
 
         } else {
             Toast.makeText(getActivity(), "Note not saved", Toast.LENGTH_SHORT).show();
