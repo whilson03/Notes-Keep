@@ -1,7 +1,9 @@
 package com.olabode.wilson.notekeep.views;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +19,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.olabode.wilson.notekeep.R;
 import com.olabode.wilson.notekeep.models.Note;
+import com.olabode.wilson.notekeep.utils.Constants;
 import com.olabode.wilson.notekeep.viewmodels.NoteViewModel;
 
 public class ViewTrashNoteActivity extends AppCompatActivity {
@@ -27,6 +30,8 @@ public class ViewTrashNoteActivity extends AppCompatActivity {
     private String title;
     private String body;
     private String date;
+    private EditText editTextTitle;
+    private EditText editTextDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +39,11 @@ public class ViewTrashNoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_trash_note);
 
         mNoteLayout = findViewById(R.id.trash_view_note_layout);
-        EditText editTextTitle = findViewById(R.id.edit_text_title);
-        EditText editTextDescription = findViewById(R.id.edit_text_description);
+        editTextTitle = findViewById(R.id.edit_text_title);
+        editTextDescription = findViewById(R.id.edit_text_description);
+
+
+        setFont();
 
         editTextDescription.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,5 +106,37 @@ public class ViewTrashNoteActivity extends AppCompatActivity {
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void setFont() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ViewTrashNoteActivity.this);
+        int fontSize = (int) Float.parseFloat(preferences.
+                getString(Constants.SharedPreferenceKeys.FONT_PREFERENCE_KEY, "20"));
+        switch (fontSize) {
+            case 14:
+                setEditTextSize(fontSize);
+                break;
+            case 20:
+                setEditTextSize(fontSize);
+                break;
+            case 24:
+                setEditTextSize(fontSize);
+                break;
+            case 28:
+                setEditTextSize(fontSize);
+                break;
+        }
+    }
+
+    /**
+     * increase edit text size dynamically based on the specified size.
+     *
+     * @param size
+     */
+    private void setEditTextSize(float size) {
+        editTextDescription.setTextSize(size);
+        editTextTitle.setTextSize(size);
+
     }
 }
