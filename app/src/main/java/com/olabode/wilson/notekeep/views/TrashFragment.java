@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,7 +36,7 @@ import java.util.Objects;
  */
 public class TrashFragment extends Fragment {
 
-    private NoteViewModel trashViewModel;
+    private NoteViewModel noteViewModel;
     private NoteAdapter adapter;
 
 
@@ -52,6 +53,9 @@ public class TrashFragment extends Fragment {
         setHasOptionsMenu(true);
 
 
+        final ImageView emptyTrashIcon = rootView.findViewById(R.id.empty_trash_table_icon);
+
+
         RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -61,11 +65,25 @@ public class TrashFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
 
-        trashViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
-        trashViewModel.getAllTrashNotes().observe(this, new Observer<List<Note>>() {
+        noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
+        noteViewModel.getAllTrashNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(@Nullable List<Note> notes) {
                 adapter.submitList(notes);
+            }
+        });
+
+
+        noteViewModel.getTrashCount().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if (integer > 0) {
+                    emptyTrashIcon.setVisibility(View.INVISIBLE);
+
+
+                } else {
+                    emptyTrashIcon.setVisibility(View.VISIBLE);
+                }
             }
         });
 
@@ -106,11 +124,11 @@ public class TrashFragment extends Fragment {
                     case R.id.restore_note:
                         // res= insert note after deleting
                         note.setIsMovedToTrash(0);
-                        trashViewModel.update(note);
+                        noteViewModel.update(note);
                         Toast.makeText(getContext(), "Restored", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.delete_note:
-                        trashViewModel.delete(note);
+                        noteViewModel.delete(note);
                         Toast.makeText(getContext(), "Deleting", Toast.LENGTH_SHORT).show();
                         break;
                 }
@@ -150,7 +168,7 @@ public class TrashFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Toast.makeText(getContext(), "Emptying Trash...", Toast.LENGTH_SHORT).show();
-                        trashViewModel.emptyTrash();
+                        noteViewModel.emptyTrash();
                     }
                 }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override

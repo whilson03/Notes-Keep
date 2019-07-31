@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -74,6 +75,9 @@ public class FavouritesFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_favourites, container, false);
         setHasOptionsMenu(true);
 
+
+        final ImageView emptyFavouritesIcon = rootView.findViewById(R.id.empty_favourites_table_icon);
+
         //handle icon and background for swipe to delete layout
         icon = ContextCompat.getDrawable(Objects.requireNonNull(getActivity()),
                 R.drawable.ic_trash);
@@ -94,6 +98,19 @@ public class FavouritesFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<Note> notes) {
                 mNoteAdapter.submitList(notes);
+            }
+        });
+
+        noteViewModel.getFavouriteCount().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if (integer > 0) {
+                    emptyFavouritesIcon.setVisibility(View.INVISIBLE);
+
+
+                } else {
+                    emptyFavouritesIcon.setVisibility(View.VISIBLE);
+                }
             }
         });
 

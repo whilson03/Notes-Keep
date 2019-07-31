@@ -12,12 +12,14 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -50,7 +52,7 @@ public class NotesFragment extends Fragment {
 
     private static final int ADD_NOTE_REQUEST = 1;
     private static final int EDIT_NOTE_REQUEST = 2;
-    //private static final String TAG = NotesFragment.class.getSimpleName();
+    private static final String TAG = NotesFragment.class.getSimpleName();
 
     private NoteViewModel noteViewModel;
     private NoteAdapter adapter;
@@ -70,6 +72,8 @@ public class NotesFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_notes, container, false);
         setHasOptionsMenu(true);
+
+        final ImageView emptyNoteIcon = rootView.findViewById(R.id.empty_notes_table_icon);
 
 
         //handle icon and background for swipe to delete layout
@@ -103,7 +107,21 @@ public class NotesFragment extends Fragment {
             public void onChanged(@Nullable List<Note> notes) {
                 adapter.submitList(notes);
             }
-        }); 
+        });
+
+
+        noteViewModel.getNoteCount().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if (integer > 0) {
+                    emptyNoteIcon.setVisibility(View.INVISIBLE);
+                    Log.i(TAG, "ntes " + integer);
+
+                } else {
+                    emptyNoteIcon.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
 
         /*

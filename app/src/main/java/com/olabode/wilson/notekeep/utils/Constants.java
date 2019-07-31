@@ -11,7 +11,6 @@ public class Constants {
     }
 
     public class DatabaseColumns {
-        public static final String COLUMN_ID = "id";
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_BODY = "body";
         public static final String COLUMN_TIMESTAMP = "time_stamp";

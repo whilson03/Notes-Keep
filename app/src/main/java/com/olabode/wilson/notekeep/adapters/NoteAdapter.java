@@ -2,6 +2,7 @@ package com.olabode.wilson.notekeep.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -10,10 +11,12 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.selection.ItemDetailsLookup;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.olabode.wilson.notekeep.NoteItemDetails;
 import com.olabode.wilson.notekeep.R;
 import com.olabode.wilson.notekeep.models.Note;
 
@@ -21,6 +24,7 @@ import com.olabode.wilson.notekeep.models.Note;
  * Created by OLABODE WILSON on 2019-06-26.
  */
 public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
+
 
 
     private static DiffUtil.ItemCallback<Note> DIFF_CALLBACK = new DiffUtil.ItemCallback<Note>() {
@@ -48,7 +52,10 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
     public NoteAdapter(Context context) {
         super(DIFF_CALLBACK);
         this.context = context;
+
+
     }
+
 
     @NonNull
     @Override
@@ -61,6 +68,7 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
     @Override
     public void onBindViewHolder(@NonNull NoteHolder holder, int position) {
         Note currentNote = getItem(position);
+
 
         holder.textViewTitle.setText(currentNote.getTitle());
         holder.textViewDescription.setText(currentNote.getBody());
@@ -113,8 +121,9 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         void OnItemLongClick(Note note);
     }
 
-    class NoteHolder extends RecyclerView.ViewHolder {
+    public class NoteHolder extends RecyclerView.ViewHolder {
 
+        private final NoteItemDetails noteItemDetails;
         private TextView textViewTitle;
         private TextView textViewDescription;
         private TextView dateTextView;
@@ -127,6 +136,7 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
             textViewDescription = itemView.findViewById(R.id.text_view_description);
             dateTextView = itemView.findViewById(R.id.note_date);
             favouriteButton = itemView.findViewById(R.id.favButton);
+            noteItemDetails = new NoteItemDetails();
 
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -187,6 +197,20 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
 
         }
 
+
+        void bind(int position, boolean isSelected, Note note) {
+            noteItemDetails.position = position;
+            noteItemDetails.identifier = String.valueOf(note.getId());
+
+            // other binding stuff
+        }
+
+        public ItemDetailsLookup.ItemDetails<String> getNoteItemDetails(@NonNull MotionEvent motionEvent) {
+            return noteItemDetails;
+        }
     }
+
+
+
 
 }

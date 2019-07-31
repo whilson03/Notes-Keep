@@ -21,6 +21,11 @@ public class NoteRepository {
     private LiveData<List<Note>> allFavouriteNotes;
     private LiveData<List<Note>> allFavouriteNotesFromTrash;
 
+    // liva data object to observe the numbers of all this fields
+    private LiveData<Integer> noteCount;
+    private LiveData<Integer> favouriteCount;
+    private LiveData<Integer> trashCount;
+
 
     public NoteRepository(Application application) {
         NoteDatabase noteDatabase = NoteDatabase.getInstance(application);
@@ -28,9 +33,14 @@ public class NoteRepository {
         allNotes = noteDao.getAllNotes();
         allFavouriteNotes = noteDao.getAllFavouriteNotes();
         allFavouriteNotesFromTrash = noteDao.getAllNotesFromTrash();
+        //
 
+        noteCount = noteDao.checkNoteTable();
+        favouriteCount = noteDao.checkFavouriteNotes();
+        trashCount = noteDao.checkTrashNotes();
 
     }
+
 
     public void insert(Note note) {
         new insertNoteAsyncTask(noteDao).execute(note);
@@ -62,6 +72,19 @@ public class NoteRepository {
 
     public LiveData<List<Note>> getAllFavouriteNotes() {
         return allFavouriteNotes;
+    }
+
+
+    public LiveData<Integer> getFavouriteCount() {
+        return favouriteCount;
+    }
+
+    public LiveData<Integer> getNoteCount() {
+        return noteCount;
+    }
+
+    public LiveData<Integer> getTrashCount() {
+        return trashCount;
     }
 
     public void emptyFavourite() {

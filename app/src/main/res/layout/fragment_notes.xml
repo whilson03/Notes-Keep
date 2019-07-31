@@ -13,6 +13,16 @@
         tools:listitem="@layout/note_item" />
 
 
+    <ImageView
+
+        android:id="@+id/empty_notes_table_icon"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_add"
+        android:visibility="invisible" />
+
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button_add_notes"
         android:layout_width="wrap_content"

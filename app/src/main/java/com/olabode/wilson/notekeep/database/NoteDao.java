@@ -55,6 +55,16 @@ public interface NoteDao {
     void deleteAllFromTrash();
 
 
+    @Query("SELECT COUNT(id) FROM NOTES_TABLE WHERE trash = 0")
+    LiveData<Integer> checkNoteTable();
+
+
+    @Query("SELECT COUNT(id) FROM NOTES_TABLE WHERE favourite =  1 ")
+    LiveData<Integer> checkFavouriteNotes();
+
+
+    @Query("SELECT COUNT(id) FROM NOTES_TABLE WHERE trash =  1 ")
+    LiveData<Integer> checkTrashNotes();
 
 
 }

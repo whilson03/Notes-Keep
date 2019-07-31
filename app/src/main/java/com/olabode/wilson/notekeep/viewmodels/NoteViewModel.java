@@ -22,12 +22,24 @@ public class NoteViewModel extends AndroidViewModel {
     private LiveData<List<Note>> allTrashNotes;
 
 
+    private LiveData<Integer> noteCount;
+    private LiveData<Integer> favouriteCount;
+    private LiveData<Integer> trashCount;
+
+
     public NoteViewModel(@NonNull Application application) {
         super(application);
         repository = new NoteRepository(application);
         allNotes = repository.getAllNotes();
         allFavourites = repository.getAllFavouriteNotes();
         allTrashNotes = repository.getAllNotesFromTrash();
+
+        //
+        noteCount = repository.getNoteCount();
+        favouriteCount = repository.getFavouriteCount();
+        trashCount = repository.getTrashCount();
+
+
     }
 
     public void insert(Note note) {
@@ -88,6 +100,19 @@ public class NoteViewModel extends AndroidViewModel {
 
     }
 
+    public LiveData<Integer> getFavouriteCount() {
+        return favouriteCount;
+    }
 
+
+    public LiveData<Integer> getNoteCount() {
+        return noteCount;
+    }
+
+    public LiveData<Integer> getTrashCount() {
+        return trashCount;
+
+    }
 
 }
+

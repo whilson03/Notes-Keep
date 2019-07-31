@@ -49,7 +49,7 @@ public class ViewTrashNoteActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.i("clicked ", " clicked");
-                Toast.makeText(ViewTrashNoteActivity.this, "NOTE CANNOT BE EDITED IN TRASH", Toast.LENGTH_SHORT)
+                Toast.makeText(ViewTrashNoteActivity.this, "NOTE CANNOT BE EDITED IN TRASH".toLowerCase(), Toast.LENGTH_SHORT)
                         .show();
             }
         });
@@ -57,7 +57,7 @@ public class ViewTrashNoteActivity extends AppCompatActivity {
         editTextTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(ViewTrashNoteActivity.this, "NOTE CANNOT BE EDITED IN TRASH", Toast.LENGTH_SHORT)
+                Toast.makeText(ViewTrashNoteActivity.this, "NOTE CANNOT BE EDITED IN TRASH".toLowerCase(), Toast.LENGTH_SHORT)
                         .show();
             }
         });
