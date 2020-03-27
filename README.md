@@ -6,3 +6,4 @@ Application uses Androidx
 * Preference Screen
 * Shared Preferences
 * Modal Bottom Sheet
+* 🚫 NO Dependency Injection
